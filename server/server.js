@@ -1,5 +1,6 @@
 const express = require('express');
-const router = require('./routes/routes')
+const router = require('./routes/routes');
+const path = require('path')
 // path, Controllers, Routers
 
 //connect to the SQL DB
@@ -10,17 +11,20 @@ const PORT = 3000;
 // handle parsing request body
 app.use(express.json());
 
+app.use(express.static(path.resolve(__dirname, '../')));
+
 // app.get('/', (req, res) => {
+//     console.log(path.join(__dirname, '../index.html'));
 //     return res.status(200).sendFile(path.join(__dirname, '../index.html'));
 //   });
 
-app.use('/', );
+// app.use('/', );
 
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) => res.status(404).send('This is not the page you\'re looking for...'));
 
-// global event handler
+// global error event handler
 app.use((err, req, res, next) => {
     const defaultErr = {
         log: 'Express error handler caught unknown middleware error', 
