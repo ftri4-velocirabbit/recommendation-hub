@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import  Login  from './login.jsx';
 import  SignUp  from './signUp.jsx';
 import  Results  from './results.jsx';
-// import AddMovie from './adredMovie.jsx';
+import AddMovie from './addMovie.jsx';
 
 const App = props => {
   return (

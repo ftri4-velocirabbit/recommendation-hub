@@ -9,7 +9,4 @@ import styles from './scss/application.scss';
 render( //add browser router
   <BrowserRouter>
     <App />
-    document.getElementById('root')
-
-  </BrowserRouter>
-);
+  </BrowserRouter>, document.getElementById('root'));
