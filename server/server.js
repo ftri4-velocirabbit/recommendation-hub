@@ -11,12 +11,12 @@ const PORT = 3000;
 // handle parsing request body
 app.use(express.json());
 console.log(path.resolve(__dirname, '../build'));
-app.use(express.static(path.resolve(__dirname, '../build')));
+app.use('/build',express.static(path.resolve(__dirname, '../build')));
 
-/* app.get('/', (req, res) => {
+app.get('/', (req, res) => {
     console.log(path.join(__dirname, '../index.html'));
-    return res.status(200).sendFile(path.join(__dirname, '../index.html'));
-}); */
+    return res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
+});
 
 // app.use('/', );
 
