@@ -12,6 +12,8 @@ module.exports = {
     hot:true,
     compress: true,
     port: 8080,
+    publicPath: '/',
+    contentBase: "./build"
   },
   module: {
     rules: [
