@@ -4,18 +4,20 @@ import  { Link } from 'react-router-dom';
 
 class Login extends React.Component {
   // Statement to render
-  render(
+  render(){
     return (
       <div className="loginContainer">
-        <label>Username:</label>
-        <input type="text" className="userName" value=""></input>
-        <label>Password:</label>
-        <input type="password" className="passWord" value=""></input>
-        <h3> Not signed up? </h3>
-        <button id="signUpButton">Sign up</button>
+        <form id="login_form">
+          <label>Username:</label><br></br>
+          <input type="text" className="userName" value=""></input><br></br>
+          <label>Password:</label><br></br>
+          <input type="password" className="passWord" value=""></input><br></br>
+          <h3> Not signed up? </h3><br></br>
+          <button id="signUpButton">Sign up</button>
+        </form>
       </div>
     )
-  )
+  }
 }
 
 
