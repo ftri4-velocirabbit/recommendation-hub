@@ -12,6 +12,7 @@ class Login extends React.Component {
           <input type="text" className="userName" placeholder="Ex: NancysAppleFingers2021"></input><br></br>
           <label>Password:</label><br></br>
           <input type="password" className="passWord" placeholder="Ex: Ftri4>Ftri3"></input><br></br>
+          <input type="button" className="loginButton" place
           <h3> Not signed up? </h3><br></br>
           {/* Button uses React Router to go to the Sign-Up Page */}
           <Link to={'/signup'}>
