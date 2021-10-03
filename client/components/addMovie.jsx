@@ -45,12 +45,18 @@ class AddMovie extends React.Component {
 // need to create onchange for each input. ex: onChange={this.movieTitleOnChange}
   render() {
     return (
-      <div className="loginContainer">
+      <div className="formContainer">
         <form id="addMovie_form" onsubmit={this.handleOnSubmit}>
           <label>Movie Title:</label><br></br>
-          <input type="text" className="movieClass" placeholders="Ex: Pirates of the Carribean" name="movieTItle"></input><br></br>
+          <input type="text"
+                className="movieClass"
+                placeholders="Ex: Pirates of the Carribean"
+                name="movieTItle"></input><br></br>
           <label>Genre:</label><br></br>
-          <input type="text" className="movieClass" placeholder="Ex: Action" name="genre"></input><br></br>
+          <input type="text"
+                className="movieClass"
+                placeholder="Ex: Action"
+                name="genre"></input><br></br>
           <StarRatings
             rating={this.state.rating}
             starRatedColor="blue"
@@ -58,7 +64,7 @@ class AddMovie extends React.Component {
             numberOfStars={5}
             name='rating'
             />
-          <input type="submit" id="addMovieButton" >Submit</input>
+          <button type="submit" id="addMovieButton" >Submit</button>
         </form>
       </div>
     )
