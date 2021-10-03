@@ -8,6 +8,7 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Update state for each letter passed into the username and pw input boxes
       userNameLogin: ''
       passwordLogin: ''
     }
@@ -17,16 +18,14 @@ class Login extends React.Component {
     // Pass in the data we need to send
     const body = { event };
 
-    // GET data from backend to verify user and PW
+
 
       this.setState({
         userNameLogin: resp.params.userNameLogin,
         passwordLogin: resp.params.passwordLogin
       });
     }
-    )
 
-  }
 
   handleOnSubmit = (event) => {
     const body = { event }
@@ -38,20 +37,21 @@ class Login extends React.Component {
     })
     .then(resp => resp.json())
     .then(() => {
-        return <Redirect to="/results" />
-      })
+      // Once userNameLogin and passwordLogin are verified we will redirect to the results page
+      return <Redirect to="/results" />
+    })
     .catch(err => {
+      // A userNameLogin & passwordLogin mismatch or missing UserNameLogin will result in an alert and more opportunitites to try agian.
       return alert('Incorrect username or password.')
-    }
-    }
-    )
+    });
+  };
 
   //TODO: Add onchange events to change the state as letters are entered.
   //TODO: Need to pass down state
   // Statement to render
   render(){
     return (
-      <div className="loginContainer">
+      <div className="formContainer">
         <form id="login_form" onsubmit="handleOnSubmit">
           <label>Username:</label><br></br>
           <input type="text"
@@ -69,7 +69,7 @@ class Login extends React.Component {
           <h3> Not signed up? </h3><br></br>
           {/* Button uses React Router to go to the Sign-Up Page */}
           <Link to={'/signup'}>
-            <input type="submit" id="signUpButton">Sign up</input>
+            <button type="submit" id="signUpButton">Sign up</button>
           </Link>
         </form>
         <Link to={'/addmovie'}>
