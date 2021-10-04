@@ -58,6 +58,11 @@ class Login extends React.Component {
       return <Redirect to='/results'/>
     }}
 
+    const location = {
+      pathname: '/addmovie',
+      state: { userNameLogin: this.state.userNameLogin}
+    }
+
     return (
       <div className="formContainer">
         <h1 id='title_id'>Recommendation Hub</h1>
@@ -87,11 +92,15 @@ class Login extends React.Component {
               <button type="button" className="submit_button" id="signUpButton">Sign up</button>
             </Link>
           </form>
-        <Link to={'/addmovie'}>
+
+        <Link to={location}>
           <button type="button" id="addMovieTemp">Temp Route To Add Movie</button>
         </Link>
-        <Link to={'/results'}>
+        <Link to={'/results'} state={{userName:this.state.usernameLogin}}>
           <button type="button" id="resultsButton">Results Page</button>
+        </Link>
+        <Link to={'/addGroup'}>
+          <button type="button" id="addGrpBtn">Add Group Page</button>
         </Link>
       </div>
     )

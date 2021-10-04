@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import  { Link, Redirect } from 'react-router-dom';
+import  { Link, Redirect, useLocation } from 'react-router-dom';
 import StarRatings from 'react-star-ratings'; //https://www.npmjs.com/package/react-star-ratings
 
 class AddMovie extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = { //add username and pass this to the server as well
       movieTitle: '',
       genre: '',
       rating: 0,
       redirect: false
     }
+
     this.handleOnSubmit = this.handleOnSubmit.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.changeRating = this.changeRating.bind(this);
@@ -26,7 +27,7 @@ class AddMovie extends React.Component {
   handleOnSubmit = (event) => {
     const body = { event }
     //Modify in order to connect with backend
-    fetch('/BACKEND', {
+    fetch('/ratemovie', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -55,6 +56,9 @@ class AddMovie extends React.Component {
     }
 
   render() {
+    const location = useLocation()
+    const { from } = location.state;
+    console.log('Look at location: ', location)
     // Redirect is declared in state and will redirect once the POST request is successful.
   const { redirect } = this.state;
   {if (redirect) {
