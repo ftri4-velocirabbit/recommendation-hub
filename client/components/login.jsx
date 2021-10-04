@@ -56,31 +56,33 @@ class Login extends React.Component {
 
     return (
       <div className="formContainer">
-        <form id="login_form" onSubmit={this.handleOnSubmit}>
-          <label>Username:</label><br></br>
-          <input type="text"
-                className="userName"
-                placeholder="Ex: NancysAppleFingers2021"
-                name="userNameLogin"
-                value={this.state.userNameLogin}
-                onChange={this.handleOnChange}>
-          </input><br></br>
-          <label>Password:</label><br></br>
-          <input type="password"
-                className="passWord"
-                placeholder="Ex: Ftri4>Ftri3"
-                name="passwordLogin"
-                value={this.state.passwordLogin}
-                onChange={this.handleOnChange}>
-          </input><br></br>
-          <button type="submit" id="login_Button">Log in</button>
+        <h1 id='title_id'>Recommendation Hub</h1>
+          <form id="login_form" onSubmit={this.handleOnSubmit}>
+            <label>Username:</label><br></br>
+            <input type="text"
+                  className="inputValue_input"
+                  placeholder="Ex: NancysAppleFingers2021"
+                  name="userNameLogin"
+                  value={this.state.userNameLogin}
+                  onChange={this.handleOnChange}>
+            </input><br></br>
+            <label>Password:</label><br></br>
+            <input type="password"
+                  className="inputValue_input"
+                  placeholder="Ex: Ftri4>Ftri3"
+                  name="passwordLogin"
+                  value={this.state.passwordLogin}
+                  onChange={this.handleOnChange}>
+            </input><br></br>
+            <button type="submit" className="submit_button" id="login_Button">Log in</button><br></br>
 
-          {/* Button uses React Router to go to the Sign-Up Page */}
-          <p> Not signed up? </p><br></br>
-          <Link to={'/signup'}>
-            <button type="button" id="signUpButton">Sign up</button>
-          </Link>
-        </form>
+            {/* Button uses React Router to go to the Sign-Up Page */}
+            <br></br>
+            <span id="notSignedUp_span"> Not signed up? </span><br></br>
+            <Link to={'/signup'}>
+              <button type="button" className="submit_button" id="signUpButton">Sign up</button>
+            </Link>
+          </form>
         <Link to={'/addmovie'}>
           <button type="button" id="addMovieTemp">Temp Route To Add Movie</button>
         </Link>

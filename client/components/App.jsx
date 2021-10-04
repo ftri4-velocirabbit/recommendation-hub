@@ -9,7 +9,7 @@ import AddMovie from './addMovie.jsx';
 const App = props => {
   return (
   //remove "Router" which was not needed, made sure to use "/" for the path as /login is not valid
-      <div className="router">
+      <div className="router" id='tiledBackground'>
         <main>
           <Switch>
             <Route
