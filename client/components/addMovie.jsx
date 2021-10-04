@@ -1,70 +1,93 @@
 import React, { Component } from 'react';
-import  { Link } from 'react-router-dom';
+import  { Link, Redirect } from 'react-router-dom';
 import StarRatings from 'react-star-ratings'; //https://www.npmjs.com/package/react-star-ratings
 
 class AddMovie extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rating: 1
+      movieTitle: '',
+      genre: '',
+      rating: 0,
+      redirect: false
     }
+    this.handleOnSubmit = this.handleOnSubmit.bind(this);
+    this.handleOnChange = this.handleOnChange.bind(this);
+    this.changeRating = this.changeRating.bind(this);
   }
 
   changeRating( newRating, name ) {
+    // Changes our star rating each time the user clicks a star
     this.setState({
       rating: newRating
     });
   }
 
-  handleOnSubmit = event => {
-    // hooked up to addMovie Button
-    const body = { event } //Passing in the data we need to send
-    //  Send to Server /POST
-    // Once we send to the sever
+  handleOnSubmit = (event) => {
+    const body = { event }
+    //Modify in order to connect with backend
     fetch('/BACKEND', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body) //w/e our state is
+      body: JSON.stringify(body)
     })
     .then(resp => resp.json())
     .then(() => {
-      <Redirect to="/" />
+      // Ensures redirect occurs once a successful post request is made
+      this.setState({ redirect: true });
     })
-    .catch(err => console.log('Error in handleOnSubmit; grabing user Authentication from Database'));
+    .catch(err => console.log('Error in addMovie.jsx:handleOnSubmit; POST request to server failed'));
   }
 
-  //? for every input field there needs to be an onchange method
-  //every input field will change the state.
-  // when the submit button is clicked, then send the state data to SQL
-    // Once that is done, then we reset state.
+    handleOnChange = (event) => {
+      // Pass in the data we need to send to state
+      //Name is the key in state that we need to change
+      const name = event.target.name;
+      // inputValue is the value we need to assign to the key above
+      const inputValue = event.target.value;
+      //Assigns proper key to proper value; Possible opporutnity to refactor.
+      if (event.target.name === "movieTitle") {this.setState({movieTitle: inputValue });}
+      if (event.target.name === "genre") {this.setState({genre: inputValue });}
+      // Set the value to newRating to copy the rating from changeRating Function
+      if (event.target.name === "rating") {this.setState({rating: newRating });}
+    }
 
-
-
-// need to create onchange for each input. ex: onChange={this.movieTitleOnChange}
   render() {
+    // Redirect is declared in state and will redirect once the POST request is successful.
+  const { redirect } = this.state;
+  {if (redirect) {
+    return <Redirect to='/results'/>
+  }}
+
     return (
       <div className="formContainer">
-        <form id="addMovie_form" onsubmit={this.handleOnSubmit}>
+        <form id="addMovie_form" onSubmit={this.handleOnSubmit}>
           <label>Movie Title:</label><br></br>
           <input type="text"
                 className="movieClass"
-                placeholders="Ex: Pirates of the Carribean"
-                name="movieTItle"></input><br></br>
+                placeholder="Ex: Iron Man"
+                name="movieTitle"
+                onChange={this.handleOnChange}></input><br></br>
           <label>Genre:</label><br></br>
           <input type="text"
                 className="movieClass"
                 placeholder="Ex: Action"
-                name="genre"></input><br></br>
+                name="genre"
+                onChange={this.handleOnChange}></input><br></br>
+                {/* Star Ratings Documentation: https://www.npmjs.com/package/react-star-ratings */}
           <StarRatings
             rating={this.state.rating}
-            starRatedColor="blue"
+            starHoverColor="dodgerblue"
+            starRatedColor="dodgerblue"
             changeRating={this.changeRating}
             numberOfStars={5}
             name='rating'
+            onChange={this.handleOnChange}
             />
-          <button type="submit" id="addMovieButton" >Submit</button>
+            {/* Btn initiates call to handleOnSubmit */}
+          <button type="submit" id="addMovieButton">Submit</button>
         </form>
       </div>
     )
