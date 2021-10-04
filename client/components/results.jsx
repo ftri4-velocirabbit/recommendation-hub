@@ -1,113 +1,63 @@
 import React, { Component, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-// import { useTable } from 'react-table';
+import ReactDOM, { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+// Table MUI stuff
+// import * as React from 'react';
+// import { DataGrid } from '@mui/x-data-grid';
+import CustomizedTables from './table.jsx';
+
 
 
 class Results extends React.Component {
-render() {
-  return(
-    <h2>Results Page</h2>
-  )};
-  // const data = React.useMemo(
-  //   () => [
-  //     {
-  //       col1: 'Hello',
-  //       col2: 'World',
-  //     },
-  //     {
-  //       col1: 'react-table',
-  //       col2: 'rocks',
-  //     },
-  //     {
-  //       col1: 'whatever',
-  //       col2: 'you want',
-  //     },
-  //   ],
-  //   []
-  // )
+  constructor(props) {
+    super(props);
+    this.state = {
+      userGroup: '',
+      userNameLogin: '' // Need to get this from the login and the AddMovies and AddGroups page
+    }
 
-  // const columns = React.useMemo(
-  //   () => [
-  //     {
-  //       Header: 'Column 1',
-  //       accessor: 'col1', // accessor is the "key" in the data
-  //     },
-  //     {
-  //       Header: 'Column 2',
-  //       accessor: 'col2',
-  //     },
-  //   ],
-  //   []
-  // )
+  }
+
+  componentDidMount() {
+    fetch('/results', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(this.state)
+    })
+      .then(response => response.json())
+      .then(data => this.setState({ data }))
+      .catch(err => {
+        return alert('Fetch request errored out')
+      })
+  }
+
+  //Send user data to AddMovie
+
+  //Send user data to addGroup
+
+  //Send state after fetch request to table.jsx, need group info
 
 
-  // const {
-  //   getTableProps,
-  //   getTableBodyProps,
-  //   headerGroups,
-  //   rows,
-  //   prepareRow,
-  // } = useTable({ columns, data })
 
-
-  //   render() {
-  //     return(
-  //       <h1>Results Page</h1>
-  //       <button className="AddInfo_button">Add group</button>
-  //       <button className="AddInfo_button">Add movie</button>
-
-  //       <h3>Table starts here</h3>
-  //       <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
-  //         <thead>
-  //           {headerGroups.map(headerGroup => (
-  //             <tr {...headerGroup.getHeaderGroupProps()}>
-  //               {headerGroup.headers.map(column => (
-  //                 <th
-  //                   {...column.getHeaderProps()}
-  //                   style={{
-  //                     borderBottom: 'solid 3px red',
-  //                     background: 'aliceblue',
-  //                     color: 'black',
-  //                     fontWeight: 'bold',
-  //                   }}
-  //                 >
-  //                   {column.render('Header')}
-  //                 </th>
-  //               ))}
-  //             </tr>
-  //           ))}
-  //         </thead>
-  //         <tbody {...getTableBodyProps()}>
-  //           {rows.map(row => {
-  //             prepareRow(row)
-  //             return (
-  //               <tr {...row.getRowProps()}>
-  //                 {row.cells.map(cell => {
-  //                   return (
-  //                     <td
-  //                       {...cell.getCellProps()}
-  //                       style={{
-  //                         padding: '10px',
-  //                         border: 'solid 1px gray',
-  //                         background: 'papayawhip',
-  //                       }}
-  //                     >
-  //                       {cell.render('Cell')}
-  //                     </td>
-  //                   )
-  //                 })}
-  //               </tr>
-  //             )
-  //           })}
-  //         </tbody>
-  //       </table>
-
-  //     )
-  //   }
+  render() {
+    return (
+      <div>
+        <div className="addInfo_div">
+          <Link to={'/addmovie'}>
+            <button type="button" id="addInfo_button">Add Group</button>
+          </Link>
+          <div className="divider"/>
+          <Link to={'/addgroup'}>
+            <button type="button" id="addInfo_button">Add Movie</button>
+          </Link>
+        </div>
+        <div className="biggerDivider"/>
+        <div className="resultsTable_div">
+          <CustomizedTables/>
+        </div>
+      </div>
+    );
+  }
 }
-
-
-
-
 
 export default Results;
