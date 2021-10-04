@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import  { Link } from 'react-router-dom';
+import  { Link, Redirect } from 'react-router-dom';
 
 
 
@@ -9,7 +9,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       userNameLogin: '',
-      passwordLogin: ''
+      passwordLogin: '',
+      redirect: false
     }
       // Update state for each letter passed into the username and pw input boxes
   this.handleOnChange = this.handleOnChange.bind(this);
@@ -29,8 +30,6 @@ class Login extends React.Component {
   handleOnSubmit = (event) => {
     const body = { event } // todo this is off
 
-    event.preventDefault(); // TODO remove this so it redirects
-
     fetch('/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -39,7 +38,7 @@ class Login extends React.Component {
     .then(resp => resp.json())
     .then(() => {
       // Once userNameLogin and passwordLogin are verified and we receive the response, we will redirect to the results page
-      return <Redirect to="/results" />
+      this.setState({ redirect: true });
     })
     .catch(err => {
       // A userNameLogin & passwordLogin mismatch or missing UserNameLogin will result in an alert and more opportunitites to try agian.
@@ -53,6 +52,11 @@ class Login extends React.Component {
   render() {
 
     console.log({state: this.state});
+
+    const { redirect } = this.state;
+    {if (redirect) {
+      return <Redirect to='/results'/>
+    }}
 
     return (
       <div className="formContainer">
