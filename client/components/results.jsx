@@ -13,14 +13,29 @@ class Results extends React.Component {
     super(props);
     this.state = {
       userGroup: '',
-      userName: ''
+      userNameLogin: '' // Need to get this from the login and the AddMovies and AddGroups page
     }
 
   }
 
+  componentDidMount() {
+    fetch('/results', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(this.state)
+    })
+      .then(response => response.json())
+      .then(data => this.setState({ data }))
+      .catch(err => {
+        return alert('Fetch request errored out')
+      })
+  }
 
+  //Send user data to AddMovie
 
+  //Send user data to addGroup
 
+  //Send state after fetch request to table.jsx, need group info
 
 
 
