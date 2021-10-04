@@ -5,6 +5,7 @@ import  Login  from './login.jsx';
 import  SignUp  from './signUp.jsx';
 import  Results  from './results.jsx';
 import AddMovie from './addMovie.jsx';
+import AddGroup from './addGroup.jsx';
 
 const App = props => {
   return (
@@ -31,6 +32,11 @@ const App = props => {
               exact
               path="/addMovie"
               component={AddMovie}
+              />
+              <Route
+              exact
+              path="/addGroup"
+              component={AddGroup}
               />
           </Switch>
         </main>

@@ -51,13 +51,21 @@ class Login extends React.Component {
   // Statement to render
   render() {
 
-    console.log({state: this.state});
-
+    //console.log({state: this.state.userNameLogin});
+    //const { userNameLogin } = this.state;
     const { redirect } = this.state;
     {if (redirect) {
       return <Redirect to='/results'/>
     }}
 
+    const {userNameLogin} = this.state;
+
+    // const location = {
+    //   pathname: '/addmovie',
+    //   state: { userNameLogin: this.state.userNameLogin}
+    // }  //link on 96
+
+    //console.log('username:', UserNameLogin);
     return (
       <div className="formContainer">
         <h1 id='title_id'>Recommendation Hub</h1>
@@ -87,11 +95,15 @@ class Login extends React.Component {
               <button type="button" className="submit_button" id="signUpButton">Sign up</button>
             </Link>
           </form>
-        <Link to={'/addmovie'}>
+
+        <Link to={{pathname:'/addmovie', state:{userNameLogin}}}>
           <button type="button" id="addMovieTemp">Temp Route To Add Movie</button>
         </Link>
-        <Link to={'/results'}>
+        <Link to={{pathname:'/results', state:{userNameLogin}}}>
           <button type="button" id="resultsButton">Results Page</button>
+        </Link>
+        <Link to={{pathname:'/addGroup', state:{userNameLogin}}}>
+          <button type="button" id="addGrpBtn">Add Group Page</button>
         </Link>
       </div>
     )
