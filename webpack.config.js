@@ -12,6 +12,7 @@ module.exports = {
     hot:true,
     compress: true,
     port: 8080,
+    contentBase: "./client"
   },
   module: {
     rules: [

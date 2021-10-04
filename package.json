@@ -8,7 +8,7 @@
     "dev": "webpack serve",
     "watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/index.js"
+    "start": "nodemon server/server.js"
   },
   "repository": {
     "type": "git",
