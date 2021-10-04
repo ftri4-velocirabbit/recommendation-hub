@@ -1,3 +1,84 @@
 body{
+    background-image: url('./../images/bg12.jpeg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
     background-color:rgb(66, 191, 205);
+    font-family: Helvetica, Arial, sans-serif;
+
 }
+
+//------------------------
+//login.jsx
+#title_id {
+    position: relative;
+    right: 15%;
+    font-size: 200%;
+}
+
+.formContainer { // Same class for all other forms in project
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: xx-large;
+}
+
+#login_form {
+
+}
+
+.inputValue_input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.inputValue_input:focus {
+    background-color:#99d1c9;
+}
+
+.submit_button {
+    background-color:rgb(221, 169, 157);
+    border: none;
+    transition-duration: 0.4s;
+    color: black;
+    border: lightsalmon;
+    width: 50%;
+    padding: 3%;
+    font-size: 60%;
+    font-weight: bold;
+
+
+
+}
+
+.submit_button:hover {
+    background-color: #99d1c9;
+    size: 100%;
+    cursor: pointer;
+}
+
+#signUpButton {
+
+}
+
+#addMovieTemp {
+
+}
+//---------------------------
+// Results page
+
+//--------------------------
+//screen size changes
+@media screen and (max-width: 850px){
+    .charContainer {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }

@@ -8,72 +8,86 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Update state for each letter passed into the username and pw input boxes
-      userNameLogin: ''
+      userNameLogin: '',
       passwordLogin: ''
     }
+      // Update state for each letter passed into the username and pw input boxes
+  this.handleOnChange = this.handleOnChange.bind(this);
+  this.handleOnSubmit = this.handleOnSubmit.bind(this);
   }
 
-  handleOnChange = (event, name) => { //?How can we get the input name so this function can be used for password too?
-    // Pass in the data we need to send
-    const body = { event };
+  handleOnChange = (event) => { //?How can we get the input name so this function can be used for password too?
+    // Pass in the data we need to send to state
+    const name = event.target.name;
+    const inputValue = event.target.value;
 
-
-
-      this.setState({
-        userNameLogin: resp.params.userNameLogin,
-        passwordLogin: resp.params.passwordLogin
-      });
-    }
+    if (event.target.name === "userNameLogin") {this.setState({userNameLogin: inputValue });}
+    if (event.target.name === "passwordLogin") {this.setState({passwordLogin: inputValue });}
+  }
 
 
   handleOnSubmit = (event) => {
-    const body = { event }
+    const body = { event } // todo this is off
+
+    event.preventDefault(); // TODO remove this so it redirects
 
     fetch('/login', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(body)
+      body: JSON.stringify(this.state) //! Data will have to be parsed into the usernamLogin and passwordLogin in the BACKEND
     })
     .then(resp => resp.json())
     .then(() => {
-      // Once userNameLogin and passwordLogin are verified we will redirect to the results page
+      // Once userNameLogin and passwordLogin are verified and we receive the response, we will redirect to the results page
       return <Redirect to="/results" />
     })
     .catch(err => {
       // A userNameLogin & passwordLogin mismatch or missing UserNameLogin will result in an alert and more opportunitites to try agian.
+
       return alert('Incorrect username or password.')
     });
   };
 
-  //TODO: Add onchange events to change the state as letters are entered.
   //TODO: Need to pass down state
   // Statement to render
-  render(){
+  render() {
+
+    console.log({state: this.state});
+
     return (
       <div className="formContainer">
-        <form id="login_form" onsubmit="handleOnSubmit">
-          <label>Username:</label><br></br>
-          <input type="text"
-                className="userName"
-                placeholder="Ex: NancysAppleFingers2021"
-                name="userNameLogin"
-                onchange="handleOnChange">
-          </input><br></br>
-          <label>Password:</label><br></br>
-          <input type="password"
-                className="passWord"
-                placeholder="Ex: Ftri4>Ftri3"
-                name="passwordLogin">
-          </input><br></br>
-          <h3> Not signed up? </h3><br></br>
-          {/* Button uses React Router to go to the Sign-Up Page */}
-          <Link to={'/signup'}>
-            <button type="submit" id="signUpButton">Sign up</button>
-          </Link>
-        </form>
+        <h1 id='title_id'>Recommendation Hub</h1>
+          <form id="login_form" onSubmit={this.handleOnSubmit}>
+            <label>Username:</label><br></br>
+            <input type="text"
+                  className="inputValue_input"
+                  placeholder="Ex: NancysAppleFingers2021"
+                  name="userNameLogin"
+                  value={this.state.userNameLogin}
+                  onChange={this.handleOnChange}>
+            </input><br></br>
+            <label>Password:</label><br></br>
+            <input type="password"
+                  className="inputValue_input"
+                  placeholder="Ex: Ftri4>Ftri3"
+                  name="passwordLogin"
+                  value={this.state.passwordLogin}
+                  onChange={this.handleOnChange}>
+            </input><br></br>
+            <button type="submit" className="submit_button" id="login_Button">Log in</button><br></br>
+
+            {/* Button uses React Router to go to the Sign-Up Page */}
+            <br></br>
+            <span id="notSignedUp_span"> Not signed up? </span><br></br>
+            <Link to={'/signup'}>
+              <button type="button" className="submit_button" id="signUpButton">Sign up</button>
+            </Link>
+          </form>
         <Link to={'/addmovie'}>
           <button type="button" id="addMovieTemp">Temp Route To Add Movie</button>
+        </Link>
+        <Link to={'/results'}>
+          <button type="button" id="resultsButton">Results Page</button>
         </Link>
       </div>
     )
