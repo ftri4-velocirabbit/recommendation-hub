@@ -27,11 +27,8 @@ class Login extends React.Component {
 
 
   handleOnSubmit = (event) => {
-    console.log("State Upon Login Button: ", this.state);
-    console.log("🚀 ~ file: login.jsx ~ line 32 ~ Login ~ event", event)
     const body = { event } // todo this is off
 
-    console.log({user: this.state.userNameLogin, pass: this.state.passwordLogin})
     event.preventDefault(); // TODO remove this so it redirects
 
     fetch('/login', {
@@ -46,16 +43,11 @@ class Login extends React.Component {
     })
     .catch(err => {
       // A userNameLogin & passwordLogin mismatch or missing UserNameLogin will result in an alert and more opportunitites to try agian.
+
       return alert('Incorrect username or password.')
     });
   };
 
-  onLinkClick(e) {
-    e.preventDefault();
-    // further processing happens here
-  }
-
-  //TODO: Add onchange events to change the state as letters are entered.
   //TODO: Need to pass down state
   // Statement to render
   render() {
@@ -82,15 +74,18 @@ class Login extends React.Component {
                 onChange={this.handleOnChange}>
           </input><br></br>
           <button type="submit" id="login_Button">Log in</button>
-          <h3> Not signed up? </h3><br></br>
-          {/* Button uses React Router to go to the Sign-Up Page */}
 
+          {/* Button uses React Router to go to the Sign-Up Page */}
+          <p> Not signed up? </p><br></br>
           <Link to={'/signup'}>
             <button type="button" id="signUpButton">Sign up</button>
           </Link>
         </form>
         <Link to={'/addmovie'}>
           <button type="button" id="addMovieTemp">Temp Route To Add Movie</button>
+        </Link>
+        <Link to={'/results'}>
+          <button type="button" id="resultsButton">Results Page</button>
         </Link>
       </div>
     )

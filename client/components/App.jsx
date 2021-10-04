@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 import  Login  from './login.jsx';
 import  SignUp  from './signUp.jsx';
-import  Results  from './results.jsx';
+// import  Results  from './results.jsx';
 import AddMovie from './addMovie.jsx';
 
 const App = props => {
   return (
-    <Router>
+  //remove "Router" which was not needed, made sure to use "/" for the path as /login is not valid
       <div className="router">
         <main>
           <Switch>
@@ -22,11 +22,11 @@ const App = props => {
               path="/signUp"
               component={SignUp}
               />
-              <Route
+              {/* <Route
               exact
               path="/results"
               component={Results}
-              />
+              /> */}
               <Route
               exact
               path="/addMovie"
@@ -35,7 +35,7 @@ const App = props => {
           </Switch>
         </main>
       </div>
-    </Router>
+
   );
 }
 export default App;
