@@ -88,6 +88,10 @@ body{
     display:inline-block;
 }
 
+.biggerDivider {
+    height: 100px;
+}
+
 #addInfo_button {
     background: transparent;
     border: 5px solid black;
@@ -104,6 +108,10 @@ body{
     background-color: #99d1c9;
 }
 
+.resultsTable_div {
+
+    width: 80%;
+}
 
 //--------------------------
 //screen size changes
