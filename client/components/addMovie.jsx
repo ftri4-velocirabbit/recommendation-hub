@@ -11,7 +11,7 @@ class AddMovie extends React.Component {
       rating: 0,
       redirect: false
     }
-
+    // console.log('Test: ', props.location.state.product);
     this.handleOnSubmit = this.handleOnSubmit.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.changeRating = this.changeRating.bind(this);
@@ -32,7 +32,7 @@ class AddMovie extends React.Component {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(this.state) //changed from body to this.state;
     })
     .then(resp => resp.json())
     .then(() => {
@@ -56,9 +56,6 @@ class AddMovie extends React.Component {
     }
 
   render() {
-    const location = useLocation()
-    const { from } = location.state;
-    console.log('Look at location: ', location)
     // Redirect is declared in state and will redirect once the POST request is successful.
   const { redirect } = this.state;
   {if (redirect) {
