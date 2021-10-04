@@ -11,7 +11,7 @@ const PORT = 3000;
 // handle parsing request body
 app.use(express.json());
 console.log(path.resolve(__dirname, '../build'));
-app.use('/build',express.static(path.resolve(__dirname, '../build')));
+app.use('/build', express.static(path.resolve(__dirname, '../build')));
 
 app.get('/', (req, res) => {
     console.log(path.join(__dirname, '../index.html'));
