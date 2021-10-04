@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, Route } from 'react-router-dom';
 
 
 class SignUp extends React.Component {
@@ -9,7 +9,8 @@ class SignUp extends React.Component {
       firstName: '',
       lastName: '',
       userNameLogin: '',
-      passwordLogin: ''
+      passwordLogin: '',
+      redirect: false
     }
       // Update state for each letter passed into the username and pw input boxes
   this.handleOnChange = this.handleOnChange.bind(this);
@@ -31,13 +32,12 @@ class SignUp extends React.Component {
 
 
   handleOnSubmit = (event) => {
+
     console.log("State Upon Login Button: ", this.state);
 
     const body = { event }
 
     console.log({user: this.state.userNameLogin, pass: this.state.passwordLogin, firstName: this.state.firstName, lastName: this.state.lastName})
-
-    // TODO remove this so it redirects
 
     fetch('/signup', {
       method: 'POST',
@@ -45,13 +45,13 @@ class SignUp extends React.Component {
       body: JSON.stringify(this.state) // todo fix here What do we send back and how do we send it back
     })
     .then(resp => resp.json())
-    // .then(() => {
-    //   // Once account is created, bring the user back to the login page
-    // })
+    .then(() => {
+      //Set the state of redirect to be true, thus initiating the redirect in the render
+      this.setState({ redirect: true });
+    })
     .catch(err => {
       // Return a general error if POST did not work
-      return <Redirect to={'/'} />
-      // return alert('ERROR: Was not able to create an account')
+      return alert('ERROR: Was not able to create an account')
     });
   };
 
@@ -60,7 +60,15 @@ class SignUp extends React.Component {
   // Statement to render
   render() {
 
+    //Bringing in Redirect from the state, and running once it hits the 'then' chain above.
+    const { redirect } = this.state;
+    {if (redirect) {
+      return <Redirect to='/'/>
+     }}
+
+
     console.log({state: this.state});
+    console.log('What is redirect: ', this.state.redirect)
 
     return (
       <div className="formContainer">
@@ -106,6 +114,7 @@ class SignUp extends React.Component {
         <Link to={'/'}>
           <button type="button" id="loginTempBtn">Temp Route To Login Page</button>
         </Link>
+
       </div>
     )
   }
