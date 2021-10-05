@@ -39,7 +39,7 @@ function createData(name, calories, fat, carbs, protein) {
 //   return { movie, reviews, rating, the_genre };
 // }
 
-  // Our data
+  // Our data format
   // let sqlTableResponse = [   {     avg_rating: '4.0000000000000000',     movie_name: 'Brave',     total_reviews: '2',     genre: 'animated'   },   {     avg_rating: '5.0000000000000000',     movie_name: 'Cars',     total_reviews: '1',     genre: 'animated'   },   {     avg_rating: '3.0000000000000000',     movie_name: 'Frozen',     total_reviews: '1',     genre: 'animated'   },   {     avg_rating: '1.00000000000000000000',     movie_name: 'Onward',     total_reviews: '1',     genre: 'animated'   },   {     avg_rating: '2.5000000000000000',     movie_name: 'Titanic',     total_reviews: '2',     genre: 'live-action'   } ]
 
 

@@ -12,8 +12,8 @@ class Results extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userGroup: '',
-      userNameLogin: '' // Need to get this from the login and the AddMovies and AddGroups page
+      userGroup: 'koala',
+      userNameLogin: 'mh' // Need to get this from the login and the AddMovies and AddGroups page
     }
 
   }
@@ -40,6 +40,9 @@ class Results extends React.Component {
 
 
   render() {
+    const {userGroup} = this.state;
+    <Link to={{pathname:'/addmovie', state:{userGroup}}} />
+
     return (
       <div>
         <div className="addInfo_div">
@@ -56,6 +59,7 @@ class Results extends React.Component {
           <CustomizedTables/>
         </div>
       </div>
+      
     );
   }
 }

@@ -76,7 +76,7 @@ class AddGroup extends React.Component {
         <form id="addGroup_form" onSubmit={this.hanldeOnJoinGroup}>
           <label>Create A Group:</label><br></br>
           <input type="text"
-                className="addGroup_class"
+                className="inputValue_input"
                 placeholder="Ex: TheZombieMovieGroup"
                 name="inputGroup"
                 onChange={this.handleOnChange}></input><br></br>
@@ -85,7 +85,7 @@ class AddGroup extends React.Component {
         <form id="joinGroup_form" onSubmit={this.hanldeOnJoinGroup}>
           <label>Join A Group:</label><br></br>
           <input type="text"
-                className="joinGroup_class"
+                className="inputValue_input"
                 placeholder="Ex: Codesmith"
                 name="inputGroup"
                 onChange={this.handleOnChange}></input><br></br>

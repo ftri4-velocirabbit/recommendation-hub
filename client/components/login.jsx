@@ -8,8 +8,8 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userNameLogin: '',
-      passwordLogin: '',
+      userNameLogin: 'mh',
+      passwordLogin: 'miguelh',
       redirect: false
     }
       // Update state for each letter passed into the username and pw input boxes
@@ -28,23 +28,23 @@ class Login extends React.Component {
 
 
   handleOnSubmit = (event) => {
-    const body = { event } // todo this is off
+    // const body = { event } // todo this is off
+    return <Redirect to='/results'/>
+    // fetch('/login', {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify(this.state) //! Data will have to be parsed into the usernamLogin and passwordLogin in the BACKEND
+    // })
+    // .then(resp => resp.json())
+    // .then(() => {
+    //   // Once userNameLogin and passwordLogin are verified and we receive the response, we will redirect to the results page
+    //   this.setState({ redirect: true });
+    // })
+    // .catch(err => {
+    //   // A userNameLogin & passwordLogin mismatch or missing UserNameLogin will result in an alert and more opportunitites to try agian.
 
-    fetch('/login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(this.state) //! Data will have to be parsed into the usernamLogin and passwordLogin in the BACKEND
-    })
-    .then(resp => resp.json())
-    .then(() => {
-      // Once userNameLogin and passwordLogin are verified and we receive the response, we will redirect to the results page
-      this.setState({ redirect: true });
-    })
-    .catch(err => {
-      // A userNameLogin & passwordLogin mismatch or missing UserNameLogin will result in an alert and more opportunitites to try agian.
-
-      return alert('Incorrect username or password.')
-    });
+    //   return alert('Incorrect username or password.')
+    // });
   };
 
   //TODO: Need to pass down state
@@ -86,7 +86,10 @@ class Login extends React.Component {
                   value={this.state.passwordLogin}
                   onChange={this.handleOnChange}>
             </input><br></br>
+            <Link to={'/results'}>
             <button type="submit" className="submit_button" id="login_Button">Log in</button><br></br>
+            </Link>
+            
 
             {/* Button uses React Router to go to the Sign-Up Page */}
             <br></br>
@@ -95,8 +98,7 @@ class Login extends React.Component {
               <button type="button" className="submit_button" id="signUpButton">Sign up</button>
             </Link>
           </form>
-
-        <Link to={{pathname:'/addmovie', state:{userNameLogin}}}>
+        {/* <Link to={{pathname:'/addmovie', state:{userNameLogin}}}>
           <button type="button" id="addMovieTemp">Temp Route To Add Movie</button>
         </Link>
         <Link to={{pathname:'/results', state:{userNameLogin}}}>
@@ -104,7 +106,7 @@ class Login extends React.Component {
         </Link>
         <Link to={{pathname:'/addGroup', state:{userNameLogin}}}>
           <button type="button" id="addGrpBtn">Add Group Page</button>
-        </Link>
+        </Link> */}
       </div>
     )
   }
