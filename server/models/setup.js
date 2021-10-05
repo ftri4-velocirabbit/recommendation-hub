@@ -140,4 +140,4 @@ async function destroyDatabase() {
   }
 }
 
-module.exports = { initDatabase, destroyDatabase };
+module.exports = { initDatabase, destroyDatabase, pool };
