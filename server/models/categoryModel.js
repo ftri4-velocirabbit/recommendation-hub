@@ -1,11 +1,9 @@
 const { pool } = require('./setup.js');
 
 /**
- * @returns .
+ * @returns Object of category added.
  */
 async function createCategory(category) {
-  console.log({ pool });
-
   const result = await pool.query(
     `
       INSERT INTO categories (name)
@@ -14,19 +12,23 @@ async function createCategory(category) {
       `,
     [category]
   );
-
+  console.log('create categories', result.rows);
   return result.rows[0];
 }
 
 /**
- * @returns .
+ * @returns Object of category deleted.
  */
-async function deleteCategories() {
+async function deleteCategories(category) {
   const result = await pool.query(
     `
-    DELETE FROM categories;
-    `
+    DELETE FROM categories
+    WHERE name = $1
+    RETURNING *;
+    `,
+    [category]
   );
+  console.log('delete categories', result.rows);
   return result.rows[0];
 }
 

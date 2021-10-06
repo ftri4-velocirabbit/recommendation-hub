@@ -18,27 +18,7 @@ async function initDatabase() {
       console.log(result);
     });
 
-  // TODO call categoriesModel and create all categories in db
   await Promise.all(CATEGORIES.map((category) => createCategory(category)));
-
-  await pool
-    .query(
-      `
-    CREATE TABLE recommendations(
-      id SERIAL NOT NULL PRIMARY KEY,
-      title VARCHAR NOT NULL,
-      body VARCHAR NOT NULL,
-      date TIMESTAMP NOT NULL,
-      category VARCHAR,
-      rating INT NOT NULL,
-      FOREIGN KEY (category) REFERENCES categories(name)
-    );
-  `,
-      []
-    )
-    .then((result) => {
-      console.log(result);
-    });
 
   await pool
     .query(
@@ -61,12 +41,16 @@ async function initDatabase() {
   await pool
     .query(
       `
-    CREATE TABLE user_recommendations(
+    CREATE TABLE recommendations(
       id SERIAL NOT NULL PRIMARY KEY,
       username VARCHAR NOT NULL,
-      recommendation_id INT NOT NULL,
+      title VARCHAR NOT NULL,
+      body VARCHAR NOT NULL,
+      date TIMESTAMP NOT NULL,
+      category VARCHAR,
+      rating INT NOT NULL,
       FOREIGN KEY (username) REFERENCES users(username),
-      FOREIGN KEY (recommendation_id) REFERENCES recommendations(id)
+      FOREIGN KEY (category) REFERENCES categories(name)
     );
   `,
       []
@@ -74,6 +58,23 @@ async function initDatabase() {
     .then((result) => {
       console.log(result);
     });
+
+  // await pool
+  //   .query(
+  //     `
+  //   CREATE TABLE user_recommendations(
+  //     id SERIAL NOT NULL PRIMARY KEY,
+  //     username VARCHAR NOT NULL,
+  //     recommendation_id INT NOT NULL,
+  //     FOREIGN KEY (username) REFERENCES users(username),
+  //     FOREIGN KEY (recommendation_id) REFERENCES recommendations(id)
+  //   );
+  // `,
+  //     []
+  //   )
+  //   .then((result) => {
+  //     console.log(result);
+  //   });
 
   await pool
     .query(
@@ -158,7 +159,7 @@ async function destroyDatabase() {
     await pool
       .query(
         `
-    DROP TABLE users;
+    DROP TABLE recommendations;
   `,
         []
       )
@@ -173,7 +174,7 @@ async function destroyDatabase() {
     await pool
       .query(
         `
-    DROP TABLE recommendations;
+    DROP TABLE users;
   `,
         []
       )

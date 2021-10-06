@@ -8,20 +8,35 @@ const categoryModel = require('./models/categoryModel');
   // await databaseModel.destroyDatabase();
   // await databaseModel.initDatabase();
 
-  await categoryModel.deleteCategories();
+  // let category;
+  // category = await categoryModel.deleteCategories('Food');
+  // console.log('deleted', category);
 
-  // let recommendation;
-  // recommendation = await recommendationModel.createRecommendation(
-  //   'hello',
-  //   'hi',
+  let recommendation;
+  // recommendation = await recommendationModel.updateRecommendation(
+  //   3,
+  //   'duke',
+  //   'Avengers',
+  //   'so cool-ish',
   //   new Date(),
-  //   'movies',
-  //   5
+  //   'Movies',
+  //   4
   // );
-  // console.log(recommendation);
+  // recommendation = await recommendationModel.readRecommendation(3);
+  recommendation = await recommendationModel.deleteRecommendation(2);
+  console.log(recommendation);
 
   // let user;
-  // user = await userModel.createUser('miguel', 'Miguel Hernandez', 'miguelh72@gmail.com', '127.0.0.1', new Date(), 'coolpassword');
+  // user = await userModel.createUser(
+  //   'duke',
+  //   'Duke Lee',
+  //   'duke@codesmith.com',
+  //   '127.0.0.1',
+  //   new Date(),
+  //   'goodpassword'
+  // );
+  // console.log(user);
+
   // //user = await userModel.readUser('miguel');
   // //user = await userModel.updateUser('miguel', 'Not Miguel', 'not my email', '128.0.0.1', new Date('1992-03-19'));
 
