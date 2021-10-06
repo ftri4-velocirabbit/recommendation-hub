@@ -1,0 +1,5 @@
+@import "./../config.scss";
+
+#app {
+  height: calc(100% - $footer-height);
+}

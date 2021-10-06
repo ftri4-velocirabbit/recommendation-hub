@@ -1,0 +1,12 @@
+@import "./config.scss";
+
+body,
+html,
+#root {
+  height: 100%;
+}
+
+#root {
+  max-width: $app-width;
+  margin: 0 auto;
+}
