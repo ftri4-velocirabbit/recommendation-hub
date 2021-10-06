@@ -48,10 +48,6 @@ describe('Test session model interface', () => {
     let session = await createSession(username, expires);
     expect(session).toMatchObject({ username, expires });
 
-    // creating another session for same user returns undefined
-    session = await createSession(username, expires);
-    expect(session).toBeUndefined();
-
     // database only has one session object
     const result = await pool.query(`SELECT * FROM sessions;`, []);
     expect(result.rows).toHaveLength(1);
@@ -85,8 +81,8 @@ describe('Test session model interface', () => {
     session = await updateSession(session.id, expires2);
     expect(session).toMatchObject({ username, expires: expires2 });
 
-    // updating a session for a user that does not have one returns undefined
-    session = await createSession('fakeuser', expires);
+    // updating a session for an sid that does not exists returns undefined
+    session = await updateSession(99, expires);
     expect(session).toBeUndefined();
 
     // database only has one session object
