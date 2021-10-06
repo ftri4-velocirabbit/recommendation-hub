@@ -6,9 +6,8 @@ const sessionModel = require('../models/sessionModel');
 async function createSession(req, res, next) {
 	if (!res.locals.user) return next();
 
-	const { username } = res.locals.user;
-
 	try {
+		const { username } = res.locals.user;
 		// todo date plus our expired time lapse
 		const newSession = await sessionModel.createSession(username, new Date());
 
@@ -22,7 +21,6 @@ async function createSession(req, res, next) {
 		return next(error);
 	}
 }
-
 
 module.exports = {
 	createSession,
