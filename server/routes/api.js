@@ -1,26 +1,17 @@
-const express = require('express');
-const userController = require('../controllers/userController');
-// const cookieController = require('../controllers/cookieController');
-const router = express.Router();
+const { Router } = require('express');
 
-router.get('/user', userController.getUser, (req, res) => {
-	res.status(200).json(res.locals.user);
-});
+const userRouter = require('./user');
+const searchRouter = require('./search');
+const profileRouter = require('./profile');
+const feedRouter = require('./feed');
+const recommendationRouter = require('./recommendation');
 
-router.post('/user', userController.createUser, (req, res) => {
-	res.status(200).json(res.locals.newUser);
-});
+const router = Router();
 
-router.patch('/user/:username', userController.updateUser, (req, res) => {
-	res.status(200).json(res.locals.user);
-});
-
-router.delete('/user/:username', userController.deleteUser, (req, res) => {
-	if (res.locals.deletedSession) {
-		res.status(401).json({ error: 'your session has expired' });
-	} else {
-		res.status(200).json(res.locals.deletedUser);
-	}
-});
+router.use('/user', userRouter);
+router.use('/search', searchRouter);
+router.use('/profile', profileRouter);
+router.use('/feed', feedRouter);
+router.use('/recommendation', recommendationRouter);
 
 module.exports = router;
