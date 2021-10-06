@@ -23,7 +23,6 @@ async function createSession(req, res, next) {
 	}
 }
 
-console.log(createSession());
 
 module.exports = {
 	createSession,
