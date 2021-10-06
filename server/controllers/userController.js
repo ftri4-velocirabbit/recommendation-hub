@@ -1,6 +1,7 @@
-const userModel = require('../models/userModel');
-const sessionModel = require('../models/sessionModel');
 const bcrypt = require('bcrypt');
+
+const sessionModel = require('../models/sessionModel');
+const userModel = require('../models/userModel');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -118,10 +119,23 @@ async function deleteUser(req, res, next) {
 	}
 }
 
+/**
+ * Middleware: Search for users based on parameter `term`. Array of users, may be empty, will be set in `res.locals.users`.
+ */
+async function searchUsers(req, res, next) {
+	// confirm user has passes access check
+	if (!res.locals.user) return next();
+	if (!req.params.term) return next(new Error('Middleware reached without term query parameter.'));
+
+	res.locals.users = userModel.searchUsers(req.params.term);
+	return next();
+}
+
 module.exports = {
 	createUser,
 	getUser,
 	verifyUser,
 	updateUser,
 	deleteUser,
+	searchUsers
 };

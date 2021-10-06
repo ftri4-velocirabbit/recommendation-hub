@@ -74,6 +74,53 @@ describe('Test user model interface', () => {
     expect(result.rows).toHaveLength(1);
   });
 
+  test('Search for users', async () => {
+    const username = 'miguel';
+    const name = 'Miguel Hernandez';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    const username2 = 'adam';
+    const name2 = 'Adam Smith';
+    const email2 = 'adam@outlook.com';
+
+    const username3 = 'Maria';
+    const name3 = 'Maria Smith';
+    const email3 = 'maria@google.com';
+
+    await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username2, name2, email2, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username3, name3, email3, last_login_ip, last_login_date, passhash);
+
+    // search for users with term "smith"
+    let users = await userModel.searchUsers('smith');
+    expect(users).toHaveLength(2);
+    expect(users).toMatchObject([
+      //{ username, name, email, passhash, last_login_ip, last_login_date },
+      { username: username2, name: name2, email: email2, passhash, last_login_ip, last_login_date },
+      { username: username3, name: name3, email: email3, passhash, last_login_ip, last_login_date },
+    ]);
+
+    users = await userModel.searchUsers('outlook');
+    expect(users).toHaveLength(2);
+    expect(users).toMatchObject([
+      { username, name, email, passhash, last_login_ip, last_login_date },
+      { username: username2, name: name2, email: email2, passhash, last_login_ip, last_login_date },
+    ]);
+
+    users = await userModel.searchUsers('guel');
+    expect(users).toHaveLength(1);
+    expect(users).toMatchObject([
+      { username, name, email, passhash, last_login_ip, last_login_date },
+    ]);
+
+    // database only has one user object
+    const result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(3);
+  });
+
   test('Update a user', async () => {
     const username = 'miguel';
     const name = 'Miguel Hernandez';
