@@ -20,13 +20,29 @@ async function createUser(req, res, next) {
 }
 
 /**
- * @returns user object in res.locals or error
+ * @returns user object with followed and followers in res.locals or error
  */
 async function getUser(req, res, next) {
 	try {
+		const userObj = {};
 		const session = await sessionModel.readSession(req.cookies.sid);
-		const user = await userModel.readUser(session.username);
-		res.locals.user = user;
+		userObj.user = await userModel.readUser(session.username);
+
+		userObj.followedUsers = [];
+		const followedArray = await userModel.getFollowed(session.username);
+		for (let followed of followedArray) {
+			const followedUser = await userModel.readUser(followed.followed_username);
+			userObj.followedUsers.push(followedUser);
+		}
+
+		userObj.followers = [];
+		const followersArray = await userModel.getFollowers(session.username);
+		for (let follower of followersArray) {
+			const followerUser = await userModel.readUser(follower.username);
+			userObj.followers.push(followerUser);
+		}
+
+		res.locals.user = userObj;
 		return next();
 	} catch (error) {
 		return next(error);
@@ -40,10 +56,24 @@ async function verifyUser(req, res, next) {
 	try {
 		const { username, password } = req.body;
 		const user = await userModel.readUser(username);
-		console.log(user);
+		console.log('user', user);
 		const match = await bcrypt.compare(password, user.passhash);
 		if (!match) return next();
+
+		// TODO update last ip and last login date
+
+		const currentSession = await sessionModel.readSession(req.cookies.sid);
+		const now = new Date();
+
+		// checking if current session is expired
+		if (currentSession.expires > now) {
+			res.locals.isLoggedIn = true;
+		} else {
+			res.locals.expiredSession = true;
+		}
+
 		res.locals.user = user;
+		// console.log('reslocals', res.locals);
 		return next();
 	} catch (error) {
 		return next(error);
@@ -81,7 +111,7 @@ async function deleteUser(req, res, next) {
 	try {
 		const { username } = req.params;
 		const result = await userModel.deleteUser(username);
-		res.locals.deleted = result;
+		res.locals.deletedUser = result;
 		return next();
 	} catch (error) {
 		return next(error);

@@ -5,8 +5,8 @@ const recommendationModel = require('./models/recommendationModel');
 const categoryModel = require('./models/categoryModel');
 
 (async () => {
-	//await databaseModel.destroyDatabase();
-	//await databaseModel.initDatabase();
+	// await databaseModel.destroyDatabase();
+	// await databaseModel.initDatabase();
 
 	// let category;
 	// category = await categoryModel.deleteCategories('Food');
@@ -26,10 +26,9 @@ const categoryModel = require('./models/categoryModel');
 	// recommendation = await recommendationModel.deleteRecommendation(2);
 	// console.log(recommendation);
 
-	let user;
-
-	user = await userModel.readUser('dukelee');
-	console.log(user);
+	// let user;
+	// user = await userModel.getFollowers('dukelee4');
+	// console.log(user);
 
 	// //user = await userModel.readUser('miguel');
 	// //user = await userModel.updateUser('miguel', 'Not Miguel', 'not my email', '128.0.0.1', new Date('1992-03-19'));
