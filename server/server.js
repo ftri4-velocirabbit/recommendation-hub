@@ -1,12 +1,14 @@
+const path = require('path');
 const express = require('express');
-const apiRouter = require('./routes/routes');
-const path = require('path')
+
 // path, Controllers, Routers
 
 //connect to the SQL DB
 
 const app = express();
-const PORT = 3000; 
+const PORT = 3000;
+
+/*
 
 // handle parsing request body
 app.use(express.json());
@@ -37,8 +39,10 @@ app.use((err, req, res, next) => {
     res.status(errorObj.status).send(JSON.stringify(errorObj.message));
 });
 
+*/
+
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`)
+    console.log(`Server listening on http://localhost:${PORT}`);
 });
 
-// module.exports = app;
+module.exports = app;

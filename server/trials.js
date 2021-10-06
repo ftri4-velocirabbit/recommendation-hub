@@ -5,8 +5,8 @@ const recommendationModel = require('./models/recommendationModel');
 const categoryModel = require('./models/categoryModel');
 
 (async () => {
-  // await databaseModel.destroyDatabase();
-  // await databaseModel.initDatabase();
+  //await databaseModel.destroyDatabase();
+  //await databaseModel.initDatabase();
 
   // let category;
   // category = await categoryModel.deleteCategories('Food');
@@ -27,14 +27,7 @@ const categoryModel = require('./models/categoryModel');
   // console.log(recommendation);
 
   let user;
-  // user = await userModel.createUser(
-  //   'duke2',
-  //   'Duke Lee',
-  //   'duke@codesmith.com',
-  //   '127.0.0.1',
-  //   new Date(),
-  //   'goodpassword'
-  // );
+
   user = await userModel.followUser('duke', 'duke3');
   console.log(user);
 
