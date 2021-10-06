@@ -1,5 +1,5 @@
-const userModel = require('./../../server/models/userModel');
 const { pool } = require('./../../server/models/setup');
+const userModel = require('./../../server/models/userModel');
 const databaseModel = require('./../../server/models/databaseModel');
 
 /*
