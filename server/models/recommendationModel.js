@@ -29,13 +29,13 @@ async function readRecommendation(id) {
 /**
  * @returns Database recommendation object or undefined if no recommendation exists.
  */
-async function updateRecommendation(id, username, title, body, date, category, rating) {
+async function updateRecommendation(id, title, body, date, category, rating) {
   const result = await pool.query(`
     UPDATE recommendations
-    SET username = $2, title = $3, body = $4, date = $5, category = $6 , rating = $7
+    SET title = $2, body = $3, date = $4, category = $5 , rating = $6
     WHERE id = $1
     RETURNING *;
-  `, [id, username, title, body, date, category, rating]);
+  `, [id, title, body, date, category, rating]);
 
   return result.rows[0];
 }
