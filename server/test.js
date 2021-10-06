@@ -12,7 +12,7 @@ const categoryModel = require('./models/categoryModel');
   // category = await categoryModel.deleteCategories('Food');
   // console.log('deleted', category);
 
-  let recommendation;
+  // let recommendation;
   // recommendation = await recommendationModel.updateRecommendation(
   //   3,
   //   'duke',
@@ -23,19 +23,20 @@ const categoryModel = require('./models/categoryModel');
   //   4
   // );
   // recommendation = await recommendationModel.readRecommendation(3);
-  recommendation = await recommendationModel.deleteRecommendation(2);
-  console.log(recommendation);
+  // recommendation = await recommendationModel.deleteRecommendation(2);
+  // console.log(recommendation);
 
-  // let user;
+  let user;
   // user = await userModel.createUser(
-  //   'duke',
+  //   'duke2',
   //   'Duke Lee',
   //   'duke@codesmith.com',
   //   '127.0.0.1',
   //   new Date(),
   //   'goodpassword'
   // );
-  // console.log(user);
+  user = await userModel.followUser('duke', 'duke3');
+  console.log(user);
 
   // //user = await userModel.readUser('miguel');
   // //user = await userModel.updateUser('miguel', 'Not Miguel', 'not my email', '128.0.0.1', new Date('1992-03-19'));

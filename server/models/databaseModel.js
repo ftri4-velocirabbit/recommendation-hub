@@ -82,6 +82,7 @@ async function initDatabase() {
     CREATE TABLE user_follows(
       id SERIAL NOT NULL PRIMARY KEY,
       username VARCHAR NOT NULL,
+      FOREIGN KEY (username) REFERENCES users(username),
       followed_username VARCHAR NOT NULL,
       FOREIGN KEY (followed_username) REFERENCES users(username)
     );
