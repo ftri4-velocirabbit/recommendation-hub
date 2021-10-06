@@ -16,7 +16,7 @@ import LogoutModal from './../modals/LogoutModal.jsx';
 export default function App() {
   /* STATE */
   const [useLightTheme, setUseLightTheme] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({}); //null);
 
   // controlled COMPONENTS
   const [isOpenLoginModal, handleOpenLoginModal, handleCloseLoginModal] = useModal();
@@ -47,19 +47,17 @@ export default function App() {
   theme.palette.mode = useLightTheme ? 'light' : 'dark';
 
   return (
-    <>
-      <div id='app'>
-        <NavBar
-          isLoggedIn={user !== null}
-          handleOpenLoginModal={handleOpenLoginModal}
-          handleOpenRegisterModal={handleOpenRegisterModal}
-          handleOpenLogoutModal={handleOpenLogoutModal}
-        />
-        {!user && <LandingPage />}
-        {/* <VerticalNavBar /> */}
-      <Body />
-      </div>
+    <div id='app'>
+      <NavBar
+        isLoggedIn={user !== null}
+        handleOpenLoginModal={handleOpenLoginModal}
+        handleOpenRegisterModal={handleOpenRegisterModal}
+        handleOpenLogoutModal={handleOpenLogoutModal}
+      />
+      {!user && <LandingPage />}
+      {user && <Body />}
       <Footer />
+
       <LoginModal
         isOpen={isOpenLoginModal}
         closeModal={handleCloseLoginModal}
@@ -77,6 +75,6 @@ export default function App() {
         closeModal={handleCloseLogoutModal}
         handleLogoutRequest={handleLogoutRequest}
       />
-    </>
+    </div>
   );
 }

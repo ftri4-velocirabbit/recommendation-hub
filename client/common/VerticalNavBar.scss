@@ -2,6 +2,7 @@
 #side-bar-drawer .MuiDrawer-paper,
 #side-bar-drawer .MuiDrawer-root {
   // height: 100%;
+  flex-grow: 1;
   position: relative;
   flex-direction: row;
   // width: 260px;

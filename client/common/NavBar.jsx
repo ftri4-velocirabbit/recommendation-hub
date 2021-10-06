@@ -13,7 +13,7 @@ export default function NavBar({
   handleOpenLogoutModal,
 }) {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h5" component="h1" sx={{ flexGrow: 1 }}>

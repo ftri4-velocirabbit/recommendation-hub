@@ -1,6 +1,8 @@
 @import "./../config.scss";
 
 #app {
-  height: calc(100% - $footer-height);
-  // position: ;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
 }
