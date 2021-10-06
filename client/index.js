@@ -1,12 +1,17 @@
 import React from 'react';
 import { render } from 'react-dom';
-import App from './components/App.jsx';
-import { BrowserRouter } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/styles';
 
-// uncomment so that webpack can bundle styles
-import styles from './scss/application.scss';
+import 'normalize.css';
+import './index.scss';
+import App from './common/App.jsx';
 
-render( //add browser router
-  <BrowserRouter>
+const theme = createTheme({});
+
+render(
+  <ThemeProvider theme={theme}>
     <App />
-  </BrowserRouter>, document.getElementById('root'));
+  </ThemeProvider>,
+  document.getElementById('root')
+);
