@@ -1,0 +1,12 @@
+.feed-recommendation-header {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#feed {
+  .MuiPaper-root {
+    overflow: visible;
+  }
+}

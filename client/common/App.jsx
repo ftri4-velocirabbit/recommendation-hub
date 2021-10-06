@@ -5,6 +5,8 @@ import useModal from './../hooks/useModal';
 
 import { useTheme } from '@mui/material/styles';
 import NavBar from './NavBar.jsx';
+// import VerticalNavBar from './VerticalNavBar.jsx';
+import Body from './Body.jsx';
 import LandingPage from './LandingPage.jsx';
 import Footer from './Footer.jsx';
 import LoginModal from './../modals/LoginModal.jsx';
@@ -14,7 +16,7 @@ import LogoutModal from './../modals/LogoutModal.jsx';
 export default function App() {
   /* STATE */
   const [useLightTheme, setUseLightTheme] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); //null, useState({});
 
   // controlled COMPONENTS
   const [isOpenLoginModal, handleOpenLoginModal, handleCloseLoginModal] = useModal();
@@ -24,7 +26,6 @@ export default function App() {
   const [registerModalError, setRegisterModalError] = useState('');
 
   const [isLogoutModal, handleOpenLogoutModal, handleCloseLogoutModal] = useModal();
-
 
 
   /* ACTIONS */
@@ -45,17 +46,17 @@ export default function App() {
   theme.palette.mode = useLightTheme ? 'light' : 'dark';
 
   return (
-    <>
-      <div id='app'>
-        <NavBar
-          isLoggedIn={user !== null}
-          handleOpenLoginModal={handleOpenLoginModal}
-          handleOpenRegisterModal={handleOpenRegisterModal}
-          handleOpenLogoutModal={handleOpenLogoutModal}
-        />
-        {!user && <LandingPage />}
-      </div>
+    <div id='app'>
+      <NavBar
+        isLoggedIn={user !== null}
+        handleOpenLoginModal={handleOpenLoginModal}
+        handleOpenRegisterModal={handleOpenRegisterModal}
+        handleOpenLogoutModal={handleOpenLogoutModal}
+      />
+      {!user && <LandingPage />}
+      {user && <Body />}
       <Footer />
+
       <LoginModal
         isOpen={isOpenLoginModal}
         closeModal={handleCloseLoginModal}
@@ -73,6 +74,6 @@ export default function App() {
         closeModal={handleCloseLogoutModal}
         handleLogoutRequest={handleLogoutRequest}
       />
-    </>
+    </div>
   );
 }

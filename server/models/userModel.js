@@ -97,10 +97,7 @@ async function followUser(username, followed_username) {
     `,
 			[username + followed_username, username, followed_username]
 		);
-
-		// TODO
-
-		return true;
+		return result.rowCount > 0;
 	} catch (error) {
 		if (error.message.match(/user_follows_pkey/i)) return true; // already exists
 		return false;
@@ -135,6 +132,26 @@ async function getFollowers(followed_username) {
 	return result.rows;
 }
 
+/**
+ * @returns
+ */
+async function unfollowUser(username, followed_username) {
+	try {
+		// delete relationship
+		await pool.query(
+			`
+      DELETE FROM user_follows
+      WHERE id = $1;
+    `,
+			[username + followed_username]
+		);
+
+		return true;
+	} catch (_) {
+		return false;
+	}
+}
+
 module.exports = {
 	createUser,
 	readUser,
@@ -143,4 +160,5 @@ module.exports = {
 	followUser,
 	getFollowed,
 	getFollowers,
+	unfollowUser,
 };
