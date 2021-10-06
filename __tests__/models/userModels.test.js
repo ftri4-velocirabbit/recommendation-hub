@@ -1,6 +1,6 @@
 const userModel = require('./../../server/models/userModel');
-const databaseModel = require('./../../server/models/databaseModel');
 const { pool } = require('./../../server/models/setup');
+const databaseModel = require('./../../server/models/databaseModel');
 
 /*
   Comments for how to set up local postgres database
@@ -23,7 +23,7 @@ describe('Test user model interface', () => {
   });
 
   afterEach(async () => {
-    // wipe users table
+    // wipe used tables
     await pool.query(`DELETE FROM user_follows;`, []);
     await pool.query(`DELETE FROM users;`, []);
   });
