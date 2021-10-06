@@ -52,4 +52,9 @@ async function deleteSession(sid) {
   return result.rowCount > 0;
 }
 
-module.exports = { createSession, updateSession, readSession, deleteSession };
+module.exports = {
+  createSession,
+  updateSession,
+  readSession,
+  deleteSession
+};
