@@ -12,7 +12,7 @@ export default function Body() {
   return (
     <Stack id='body' direction='row'>
       <VerticalNavBar />
-      <Feed />
+      <MyRecommendation />
     </Stack>
   );
 }
