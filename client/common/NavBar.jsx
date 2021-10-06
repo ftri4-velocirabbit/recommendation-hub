@@ -7,7 +7,10 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 export default function NavBar({
-  isLoggedIn
+  isLoggedIn,
+  handleOpenLoginModal,
+  handleOpenRegisterModal,
+  handleOpenLogoutModal,
 }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -17,9 +20,9 @@ export default function NavBar({
             Recommendation&trade;
           </Typography>
           {/* TODO add light and dark toggle */}
-          {!isLoggedIn && <Button color="inherit">Login</Button>}
-          {!isLoggedIn && <Button color="inherit">Register</Button>}
-          {isLoggedIn && <Button color="inherit">Logout</Button>}
+          {!isLoggedIn && <Button color="inherit" onClick={handleOpenLoginModal}>Login</Button>}
+          {!isLoggedIn && <Button color="inherit" onClick={handleOpenRegisterModal}>Register</Button>}
+          {isLoggedIn && <Button color="inherit" onClick={handleOpenLogoutModal}>Logout</Button>}
         </Toolbar>
       </AppBar>
     </Box>
