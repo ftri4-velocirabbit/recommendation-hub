@@ -4,3 +4,9 @@
   justify-content: space-between;
   align-items: center;
 }
+
+#feed {
+  .MuiPaper-root {
+    overflow: visible;
+  }
+}

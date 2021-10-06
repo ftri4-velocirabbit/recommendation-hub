@@ -2,7 +2,7 @@ const { pool } = require('./setup.js');
 
 const { createCategory } = require('./categoryModel');
 
-const CATEGORIES = ['Algorithms', 'Food', 'Games', 'Movies', 'Music', 'Travel'];
+const CATEGORIES = require('./../../shared/categories.json');
 
 /**
  * Initialize all database tables. Must be used on a database without matching tables. Call `destroyDatabase` first if needed.
