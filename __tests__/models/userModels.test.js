@@ -1,6 +1,6 @@
+const { pool } = require('./../../server/models/setup');
 const userModel = require('./../../server/models/userModel');
 const databaseModel = require('./../../server/models/databaseModel');
-const { pool } = require('./../../server/models/setup');
 
 /*
   Comments for how to set up local postgres database
@@ -23,7 +23,7 @@ describe('Test user model interface', () => {
   });
 
   afterEach(async () => {
-    // wipe users table
+    // wipe used tables
     await pool.query(`DELETE FROM user_follows;`, []);
     await pool.query(`DELETE FROM users;`, []);
   });
@@ -174,9 +174,54 @@ describe('Test user model interface', () => {
     result = await userModel.followUser('anotherfake', username);
     expect(result).toBe(false);
 
-    // database only has two user object
-    result = await pool.query(`SELECT * FROM users;`, []);
-    expect(result.rows).toHaveLength(2);
+    // database only has one user_follows object
+    result = await pool.query(`SELECT * FROM user_follows;`, []);
+    expect(result.rows).toHaveLength(1);
+  });
+
+  test('Unfollow a user', async () => {
+    const username = 'miguel';
+    const name = 'Miguel Hernandez';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    const user1 = await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    expect(user1).toMatchObject({ username, name, email, passhash, last_login_ip, last_login_date });
+
+    // user unfollowing himself should return true
+    let result = await userModel.unfollowUser(username, username);
+    expect(result).toBe(true);
+
+    const username2 = 'adam';
+    const user2 = await userModel.createUser(username2, name, email, last_login_ip, last_login_date, passhash);
+    expect(user2).toMatchObject({ username: username2, name, email, passhash, last_login_ip, last_login_date });
+    result = await userModel.followUser(username, username2);
+    expect(result).toBe(true);
+
+    // user1 should be able to unfollow user2
+    result = await userModel.unfollowUser(username, username2);
+    expect(result).toBe(true);
+    result = await pool.query(`
+      SELECT * FROM user_follows
+      WHERE username = $1 AND followed_username = $2;`
+      , [username, username2]);
+    expect(result.rows).toHaveLength(0);
+
+    // further unfollow should also return true
+    result = await userModel.unfollowUser(username, username2);
+    expect(result).toBe(true);
+
+    // attempting to follow a user that does not exist should return true since no relationship exists between them after the call
+    result = await userModel.unfollowUser(username, 'fakeuser');
+    expect(result).toBe(true);
+    result = await userModel.unfollowUser('anotherfake', username);
+    expect(result).toBe(true);
+
+    // database only has no user_follows object
+    result = await pool.query(`SELECT * FROM user_follows;`, []);
+    expect(result.rows).toHaveLength(0);
   });
 
 });
