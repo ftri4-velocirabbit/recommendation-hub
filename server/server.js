@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 
 // path, Controllers, Routers
 const apiRouter = require('./routes/api');
@@ -13,6 +14,9 @@ const PORT = 3000;
 // handle parsing request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// run cookie parser
+app.use(cookieParser());
 
 /*
 
