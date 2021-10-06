@@ -22,6 +22,12 @@ describe('Test user model interface', () => {
     pool.end();
   });
 
+  afterEach(async () => {
+    // wipe users table
+    await pool.query(`DELETE FROM user_follows;`, []);
+    await pool.query(`DELETE FROM users;`, []);
+  });
+
   test('Create a user', async () => {
     const username = 'miguel';
     const name = 'Miguel Hernandez';
@@ -36,10 +42,14 @@ describe('Test user model interface', () => {
     // create a user that already exists
     user = await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
     expect(user).toBeUndefined();
+
+    // database only has one user object
+    const result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(1);
   });
 
   test('Read a user', async () => {
-    const username = 'miguel2';
+    const username = 'miguel';
     const name = 'Miguel Hernandez';
     const email = 'miguelh72@outlook.com';
     const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
@@ -56,10 +66,14 @@ describe('Test user model interface', () => {
     // reading a user that does not exist
     user = await userModel.readUser('fakeusername');
     expect(user).toBeUndefined();
+
+    // database only has one user object
+    const result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(1);
   });
 
   test('Update a user', async () => {
-    const username = 'miguel3';
+    const username = 'miguel';
     const name = 'Miguel Hernandez';
     const email = 'miguelh72@outlook.com';
     const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
@@ -91,10 +105,14 @@ describe('Test user model interface', () => {
     // update a user that does not exist
     user = await userModel.readUser('fakeusername', name, email, last_login_ip, last_login_date, passhash);
     expect(user).toBeUndefined();
+
+    // database only has one user object
+    const result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(1);
   });
 
   test('Delete a user', async () => {
-    const username = 'miguel4';
+    const username = 'miguel';
     const name = 'Miguel Hernandez';
     const email = 'miguelh72@outlook.com';
     const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
@@ -111,10 +129,54 @@ describe('Test user model interface', () => {
     // delete user that does not exist
     user = await userModel.deleteUser(username);
     expect(user).toBe(false);
+
+    // database only has no user object
+    const result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(0);
   });
 
   test('Follow a user', async () => {
-    throw 'TODO test follow and unfollow user';
+    const username = 'miguel';
+    const name = 'Miguel Hernandez';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    const user1 = await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    expect(user1).toMatchObject({ username, name, email, passhash, last_login_ip, last_login_date });
+
+    // user must not be able to follow himself
+    let result = await userModel.followUser(username, username);
+    expect(result).toBe(false);
+
+    const username2 = 'adam';
+    const user2 = await userModel.createUser(username2, name, email, last_login_ip, last_login_date, passhash);
+    expect(user2).toMatchObject({ username: username2, name, email, passhash, last_login_ip, last_login_date });
+
+    // user1 should follow user 2
+    result = await userModel.followUser(username, username2);
+    expect(result).toBe(true);
+
+    // attempting to set same follow relationship again should not create a second entry
+    result = await userModel.followUser(username, username2);
+    expect(result).toBe(true);
+
+    result = await pool.query(`
+      SELECT * FROM user_follows
+      WHERE username = $1 AND followed_username = $2;`
+      , [username, username2]);
+    expect(result.rows).toHaveLength(1);
+
+    // attempting to follow a user that does not exist should fail
+    result = await userModel.followUser(username, 'fakeuser');
+    expect(result).toBe(false);
+    result = await userModel.followUser('anotherfake', username);
+    expect(result).toBe(false);
+
+    // database only has two user object
+    result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(2);
   });
 
 });

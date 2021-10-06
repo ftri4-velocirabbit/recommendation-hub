@@ -67,20 +67,24 @@ async function deleteUser(username) {
 }
 
 /**
- * @returns Boolean wether follow relationship was established. If false, either user do not exist in user table.
+ * @returns `Boolean` wether follow relationship was established. If false, either one of both of the user do not 
+ * exist in user table, or both users have the same username.
  */
 async function followUser(username, followed_username) {
-  try {
-    // try to create relationship, but it may fail if either user does'nt not exist.
-    const result = await pool.query(`
-      INSERT INTO user_follows (username, followed_username)
-      VALUES ($1, $2); 
-    `, [username, followed_username]);
+  if (username === followed_username) return false;
 
-    console.log({ result }); // ! Remove
+  try {
+    // try to create relationship, but it may fail if either user do not exist.
+    const result = await pool.query(`
+      INSERT INTO user_follows (id, username, followed_username)
+      VALUES ($1, $2, $3);
+    `, [username + followed_username, username, followed_username]);
+
+    // TODO  
 
     return true;
-  } catch (_) {
+  } catch (error) {
+    if (error.message.match(/user_follows_pkey/i)) return true; // already exists
     return false;
   }
 }
