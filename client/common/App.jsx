@@ -5,6 +5,8 @@ import useModal from './../hooks/useModal';
 
 import { useTheme } from '@mui/material/styles';
 import NavBar from './NavBar.jsx';
+// import VerticalNavBar from './VerticalNavBar.jsx';
+import Body from './Body.jsx';
 import LandingPage from './LandingPage.jsx';
 import Footer from './Footer.jsx';
 import LoginModal from './../modals/LoginModal.jsx';
