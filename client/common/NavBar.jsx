@@ -10,6 +10,7 @@ export default function NavBar({
   isLoggedIn,
   handleOpenLoginModal,
   handleOpenRegisterModal,
+  handleOpenLogoutModal,
 }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -21,7 +22,7 @@ export default function NavBar({
           {/* TODO add light and dark toggle */}
           {!isLoggedIn && <Button color="inherit" onClick={handleOpenLoginModal}>Login</Button>}
           {!isLoggedIn && <Button color="inherit" onClick={handleOpenRegisterModal}>Register</Button>}
-          {isLoggedIn && <Button color="inherit">Logout</Button>}
+          {isLoggedIn && <Button color="inherit" onClick={handleOpenLogoutModal}>Logout</Button>}
         </Toolbar>
       </AppBar>
     </Box>

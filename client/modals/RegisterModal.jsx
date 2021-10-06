@@ -98,7 +98,7 @@ export default function SignUpModal({
             <Input
               id="name-field"
               aria-describedby="name-error-text"
-              required
+              autoFocus
               value={name}
               onChange={onNameChange}
             />
