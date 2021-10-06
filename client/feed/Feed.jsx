@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import './Feed.scss';
-import FeedRecommendation from './FeedRecommendation.jsx';
+import RecommendationCard from './../common/RecommendationCard.jsx';
 
 import Stack from '@mui/material/Stack';
 
@@ -16,7 +16,9 @@ export default function Feed() {
       {
         id: 1,
         title: 'Favorite movie',
-        body: 'Titanic maybe?',
+        body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+        malesuada lacus ex, sit amet blandit leo lobortis eget.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Suspendisse
+        malesuada lacus ex, sit amet blandit leo `,
         rating: 4,
         category: 'Movies',
         date: new Date(),
@@ -37,12 +39,24 @@ export default function Feed() {
           username: 'miguel'
         }
       },
+      {
+        id: 3,
+        title: 'Worst movie',
+        body: 'Some scary movie',
+        rating: 0,
+        category: 'Movies',
+        date: new Date(),
+        owner: {
+          name: 'Miguel Hernandez',
+          username: 'miguel'
+        }
+      }
     ]);
   }, []); // todo no array, so it will be called on each component render
 
   return (
     <Stack id='feed' spacing={5}>
-      {recommendations && recommendations.map(rec => <FeedRecommendation key={rec.id} recommendation={rec} />)}
+      {recommendations && recommendations.map(rec => <RecommendationCard key={rec.id} recommendation={rec} />)}
     </Stack>
   );
 }
