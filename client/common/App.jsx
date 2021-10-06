@@ -12,7 +12,6 @@ import Footer from './Footer.jsx';
 import LoginModal from './../modals/LoginModal.jsx';
 import RegisterModal from './../modals/RegisterModal.jsx';
 import LogoutModal from './../modals/LogoutModal.jsx';
-import Feed from './../feed/Feed.jsx';
 
 export default function App() {
   /* STATE */
@@ -56,7 +55,7 @@ export default function App() {
         handleOpenLogoutModal={handleOpenLogoutModal}
       />
       {!user && <LandingPage />}
-      {user && <Feed />}
+      {user && <Body />}
       <Footer />
 
       <LoginModal
