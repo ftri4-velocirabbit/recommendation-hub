@@ -28,7 +28,6 @@ export default function App() {
   const [isLogoutModal, handleOpenLogoutModal, handleCloseLogoutModal] = useModal();
 
 
-
   /* ACTIONS */
   const handleLoginRequest = useCallback(() => {
     // TODO implement AJAX login handshake
