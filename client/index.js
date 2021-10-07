@@ -7,6 +7,7 @@ import 'normalize.css';
 import './index.scss';
 import App from './common/App.jsx';
 
+// define colors.. styles
 const theme = createTheme({});
 
 render(

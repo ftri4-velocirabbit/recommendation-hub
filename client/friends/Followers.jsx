@@ -7,7 +7,7 @@ export default function Followers() {
   const followerArray = [{name: 'Jackie A', username: 'jackiea'}, {name: 'Jake B', username: 'jakb'}, {name: 'David Dohn', username: 'davidd'}];
     const avatars = [];
     for (let user of followerArray) {
-      avatars.push(<UserAvatar key={user.username} name={user.name} />);
+      avatars.push(<UserAvatar key={user.username} name={user.name} id={user.username}/>);
     }
 
     // uncomment when ready to fetch

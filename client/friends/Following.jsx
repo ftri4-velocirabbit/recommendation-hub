@@ -8,7 +8,7 @@ export default function Following(props) {
   const followingArray = [{name: 'Jackie A', username: 'jackiea'}, {name: 'Jake B', username: 'jakb'}, {name: 'David Dohn', username: 'davidd'}];
   const avatars = [];
   for (let user of followingArray) {
-    avatars.push(<UserAvatar key={user.username} name={user.name} />);
+    avatars.push(<UserAvatar key={user.username} name={user.name} id={user.username}/>);
   }
 
 
