@@ -15,7 +15,19 @@ async function getFeed(req, res, next) {
     recommendations.push(...(await searchRecommendations(user.username)));
   }
 
-  res.locals.feed = recommendations;
+  // convert to front-end Recommendation schema
+  res.locals.feed = recommendations.map(rec => ({
+    id: rec.id,
+    title: rec.title,
+    body: rec.body,
+    rating: rec.rating,
+    category: rec.category,
+    date: rec.date,
+    owner: {
+      name: rec.name,
+      username: rec.username,
+    },
+  }));
   return next();
 }
 
