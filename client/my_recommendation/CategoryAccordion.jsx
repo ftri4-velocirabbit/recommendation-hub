@@ -12,7 +12,6 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 import RecommendationCard from './../common/RecommendationCard.jsx';
-import EditableRecommendation from './EditableRecommendation.jsx';
 
 export default function CategoryAccordion({ category, recommendations }) {
 	const id = category + '-accordion';
@@ -33,8 +32,6 @@ export default function CategoryAccordion({ category, recommendations }) {
 						{recommendations.map((rec) => (
 							<RecommendationCard key={rec.id} recommendation={rec} isEditable={true} />
 						))}
-						{/* <EditableRecommendation />
-						<EditableRecommendation /> */}
 					</Stack>
 				)}
 			</AccordionDetails>
