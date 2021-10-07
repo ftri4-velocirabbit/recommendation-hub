@@ -15,7 +15,7 @@ import LogoutModal from './../modals/LogoutModal.jsx';
 export default function App() {
   /* STATE */
 
-  const [useLightTheme, setUseLightTheme] = useState(false);
+  const [useLightTheme, setUseLightTheme] = useState(true);
   const [user, setUser] = useState(null);
 
   // controlled COMPONENTS
