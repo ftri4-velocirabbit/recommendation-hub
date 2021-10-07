@@ -1,12 +1,10 @@
 const { Router } = require('express');
 
 const { searchUsers, verifyUser } = require('./../controllers/userController');
-//const {  } = require('./../controllers/cookieController');
 
 const router = Router();
 
 router.get('/:term',
-  // TODO add middleware to verify user cookie
   verifyUser,
   searchUsers,
   (req, res, next) => {

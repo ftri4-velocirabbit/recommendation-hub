@@ -8,7 +8,6 @@ const router = Router();
  * Route used to obtain a user's profile information
  */
 router.get('/:username',
-  // TODO add middleware to verify user cookie
   verifyUser,
   getUserProfile,
   (req, res) => {
@@ -27,7 +26,6 @@ router.get('/:username',
  * Route used to follow a user.
  */
 router.post('/:username',
-  // TODO add middleware to verify user cookie
   verifyUser,
   followUser,
   (req, res, next) => {
@@ -49,7 +47,6 @@ router.post('/:username',
  * Route used to follow a user.
  */
 router.delete('/:username',
-  // TODO add middleware to verify user cookie
   verifyUser,
   unfollowUser,
   (req, res, next) => {
