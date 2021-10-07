@@ -64,7 +64,7 @@ async function getUserRecommendations(req, res, next) {
  * Middleware: Boolean set at `res.locals.dbStatus` will indicate if the database create was successful.
  */
 async function saveRecommendation(req, res, next) {
-  if (!res.locals.user) return next();
+  if (!res.locals.session) return next();
 
   const { title, body, category, rating } = req.body;
   if (typeof title !== 'string'
@@ -76,7 +76,7 @@ async function saveRecommendation(req, res, next) {
     error: 'Request body was not formatted correctly.'
   });
 
-  const result = await createRecommendation(res.locals.user.username, title, body, new Date(), category, rating);
+  const result = await createRecommendation(res.locals.session.username, title, body, new Date(), category, rating);
   res.locals.dbStatus = typeof result === 'object';
   return next();
 }

@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 const { PG_URI } = require('./connection.json');
 
 let pool;
-if (process.env.NODE_ENV !== 'test') { //'test') {
+if (process.env.NODE_ENV === 'production') { //'test') {
   pool = new Pool({
     connectionString: PG_URI,
     max: 5,
