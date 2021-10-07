@@ -32,7 +32,7 @@ router.post('/:username',
     if (!res.locals.user) return res.status(401).json({
       error: 'User is not authorized.'
     });
-    if (!res.locals.dbStatus) res.status(400).json({
+    if (!res.locals.dbStatus) return res.status(400).json({
       error: 'Failed to follow user.'
     });
     if (!res.locals.followedUsers) return next(
@@ -53,7 +53,7 @@ router.delete('/:username',
     if (!res.locals.user) return res.status(401).json({
       error: 'User is not authorized.'
     });
-    if (!res.locals.dbStatus) res.status(400).json({
+    if (!res.locals.dbStatus) return res.status(400).json({
       error: 'Failed to follow user.'
     });
     if (!res.locals.followedUsers) return next(

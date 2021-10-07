@@ -53,13 +53,14 @@ async function deleteRecommendation(id) {
 }
 
 /**
- * @returns Array of recommendations for a given username.
+ * @returns Array of recommendations for a given username, returns { id, username, name, title, body, date, category, rating } schema.
  */
 async function searchRecommendations(username) {
   const result = await pool.query(`
-    SELECT id, username, title, body, date, category, rating
-    FROM recommendations
-    WHERE username = $1;
+    SELECT r.id, r.username, r.title, r.body, r.date, r.category, r.rating, u.name
+    FROM recommendations r
+    INNER JOIN users u ON u.username = r.username
+    WHERE r.username = $1;
   `, [username]);
 
   return result.rows;

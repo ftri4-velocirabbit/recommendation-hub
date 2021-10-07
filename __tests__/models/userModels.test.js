@@ -11,30 +11,6 @@ const databaseModel = require('./../../server/models/databaseModel');
   To add tester with roles, inside psql: CREATE USER test PASSWORD 'test';
 */
 
-
-
-
-
-
-
-
-
-
-
-// TODO add test for getting list of followers and list of people you follow
-
-
-
-
-
-
-
-
-
-
-
-
-
 describe('Test user model interface', () => {
   beforeAll(async () => {
     await databaseModel.destroyDatabase();
@@ -293,6 +269,70 @@ describe('Test user model interface', () => {
     // database only has no user_follows object
     result = await pool.query(`SELECT * FROM user_follows;`, []);
     expect(result.rows).toHaveLength(0);
+  });
+
+  test('Test getting a list of people you follow', async () => {
+    const username = 'miguel';
+    const username2 = 'adam';
+    const username3 = 'mary';
+    const name = 'Miguel Hernandez';
+    const name2 = 'Adam Smith';
+    const name3 = 'Mary Smith';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username2, name2, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username3, name3, email, last_login_ip, last_login_date, passhash);
+
+    await userModel.followUser(username, username2);
+
+    let result = await userModel.getPeopleUserFollows(username);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ username: username2, name: name2 });
+
+    await userModel.followUser(username, username3);
+
+    result = await userModel.getPeopleUserFollows(username);
+    expect(result).toHaveLength(2);
+    expect(result).toMatchObject([
+      { username: username2, name: name2 },
+      { username: username3, name: name3 },
+    ]);
+  });
+
+  test('Test getting a list of people that follow the user', async () => {
+    const username = 'miguel';
+    const username2 = 'adam';
+    const username3 = 'mary';
+    const name = 'Miguel Hernandez';
+    const name2 = 'Adam Smith';
+    const name3 = 'Mary Smith';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username2, name2, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username3, name3, email, last_login_ip, last_login_date, passhash);
+
+    await userModel.followUser(username2, username);
+
+    let result = await userModel.getPeopleThatFollowUser(username);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ username: username2, name: name2 });
+
+    await userModel.followUser(username3, username);
+
+    result = await userModel.getPeopleThatFollowUser(username);
+    expect(result).toHaveLength(2);
+    expect(result).toMatchObject([
+      { username: username2, name: name2 },
+      { username: username3, name: name3 },
+    ]);
   });
 
 });
