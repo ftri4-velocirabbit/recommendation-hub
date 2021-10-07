@@ -1,15 +1,9 @@
-@import "./../config.scss";
-
 
 #app {
   display: flex;
   flex-direction: column;
   position: relative;
   height: 100%;
-  background-color: $lightgreen
 }
 
-.navBar {
-  background: $mediumgreen;
-}
 
