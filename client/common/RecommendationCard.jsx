@@ -12,7 +12,6 @@ import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
@@ -27,11 +26,12 @@ function getFirstWordLetters(string) {
 }
 
 export default function RecommendationCard({
-  recommendation: { id, title, body, rating, category, date, owner: { name, username } },
+  recommendation: { id, title, body, rating, category, date, owner: { name } },
   isEditable = false,
   openEditing = false,
   cancelEditing,
   submitNewRecommendation,
+  submitUpdateRecommendation,
 }) {
   // STRETCH add like button functionality
   // TODO add modal to unfollow user when clicking on Avatar
@@ -39,8 +39,8 @@ export default function RecommendationCard({
   /* STATE */
 
   const [isEditing, setIsEditing] = useState(openEditing);
-  const [titleFieldValue, onTitleFieldValue] = useTextField();
-  const [bodyFieldValue, onBodyFieldValue] = useTextField();
+  const [titleFieldValue, onTitleFieldValue] = useTextField(title);
+  const [bodyFieldValue, onBodyFieldValue] = useTextField(body);
   const [categoryFieldValue, onCategoryFieldValue] = useTextField(category);
 
 
@@ -55,8 +55,15 @@ export default function RecommendationCard({
     event.preventDefault();
 
     // TODO implement rating and editing of rating
-    submitNewRecommendation(titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
-  }, [bodyFieldValue, categoryFieldValue, rating, submitNewRecommendation, titleFieldValue]);
+    if (openEditing) return submitNewRecommendation(titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
+    setIsEditing(false);
+    return submitUpdateRecommendation(id, titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
+  }, [bodyFieldValue, categoryFieldValue, id, openEditing, rating, submitNewRecommendation, submitUpdateRecommendation, titleFieldValue]);
+
+  const handleCancel = useCallback(() => {
+    if (openEditing) return cancelEditing();
+    setIsEditing(false);
+  }, [cancelEditing, openEditing]);
 
 
   /* RENDER */
@@ -66,7 +73,7 @@ export default function RecommendationCard({
       <Stack className='feed-recommendation-header'>
         {!isEditing && <CardHeader
           avatar={
-            <Avatar sx={{ bgcolor: '#817f70'}}>
+            <Avatar sx={{ bgcolor: '#817f70' }}>
               {getFirstWordLetters(name)}
               {/* TODO pick a random color per user */}
             </Avatar>
@@ -98,7 +105,7 @@ export default function RecommendationCard({
           {!isEditable && <IconButton aria-label="heart this">
             <FavoriteIcon />
           </IconButton>}
-          {isEditable && !openEditing && <IconButton aria-label="edit recommendation" onClick={handleEdit}>
+          {isEditable && !openEditing && !isEditing && <IconButton aria-label="edit recommendation" onClick={handleEdit}>
             <EditIcon />
           </IconButton>}
         </CardActions>
@@ -136,7 +143,7 @@ export default function RecommendationCard({
               onChange={onBodyFieldValue}
             />
             <Button type="submit" variant="outlined" onClick={handleSaveSubmit}>Save</Button>
-            <Button variant="outlined" color="error" onClick={cancelEditing}>Cancel</Button>
+            <Button variant="outlined" color="error" onClick={handleCancel}>Cancel</Button>
           </form>
         </div>}
       </CardContent>

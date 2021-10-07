@@ -85,8 +85,10 @@ async function saveRecommendation(req, res, next) {
  * Middleware: Boolean set at `res.locals.dbStatus` will indicate if the database update was successful.
  */
 async function updateRecommendation(req, res, next) {
-  if (!res.locals.user) return next();
+  if (!res.locals.session) return next();
   if (!req.params.id) return next(new Error('Middleware reached without id parameter.'));
+
+  req.params.id = decodeURIComponent(req.params.id);
 
   const { title, body, category, rating } = req.body;
   if ((title && typeof title !== 'string')
@@ -109,7 +111,7 @@ async function updateRecommendation(req, res, next) {
   if (rating) recommendation.rating = rating;
 
   const result = await dbUpdateRecommendation(
-    res.locals.user.username,
+    recommendation.id,
     recommendation.title,
     recommendation.body,
     new Date(),

@@ -18,6 +18,7 @@ export default function CategoryAccordion({
   category,
   recommendations,
   handleNewRecommendation,
+  submitUpdateRecommendation,
 }) {
   const [isAddingNewRec, setIsAddingNewRec] = useState(false);
 
@@ -53,6 +54,8 @@ export default function CategoryAccordion({
               key={rec.id}
               recommendation={rec}
               isEditable={true}
+              cancelEditing={cancelEditing}
+              submitUpdateRecommendation={submitUpdateRecommendation}
             />)}
           </Stack>
         }
