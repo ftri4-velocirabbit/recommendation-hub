@@ -200,7 +200,14 @@ async function prefillDatabase() {
 
     // create recommendations
     await Promise.all(
-      userRecommendations.map(rec => createRecommendation(user.username, rec.title, rec.body, new Date(), rec.category, rec.rating))
+      userRecommendations.map(rec => {
+        const date = new Date();
+        date.setDate(date.getDate() - Math.floor(Math.random() * 10));
+        date.setHours(date.getHours() - Math.floor(Math.random() * 24));
+        date.setMinutes(date.getMinutes() - Math.floor(Math.random() * 60));
+
+        return createRecommendation(user.username, rec.title, rec.body, date, rec.category, rec.rating);
+      })
     );
   }
 }

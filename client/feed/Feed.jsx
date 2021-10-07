@@ -30,9 +30,16 @@ export default function Feed({
         return console.error(body);
       }
 
-      setRecommendations(body.recommendations);
+      setRecommendations(body.recommendations.map(rec => {
+        // convert date to JS date objects
+        rec.date = new Date(rec.date);
+        return rec;
+      }));
     });
   }, [setUser]);
+
+  // Sort feed in reverse chronological order
+  if (recommendations) recommendations.sort((recA, recB) => recB.date - recA.date);
 
   return (
     <Stack id='feed' spacing={5}>
