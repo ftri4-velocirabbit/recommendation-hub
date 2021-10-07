@@ -1,15 +1,28 @@
 const { Router } = require('express');
 
 const { createUser, getUser, updateUser, deleteUser } = require('../controllers/userController');
-const { createSession } = require('./../controllers/sessionController');
-const { setCookie } = require('./../controllers/cookieController');
+const { createSession, findSession } = require('./../controllers/sessionController');
+const { getCookie, setCookie } = require('./../controllers/cookieController');
 
 const router = Router();
 
 router.get('/',
+  getCookie,
+  findSession,
   getUser,
-  (req, res) => {
-    res.status(200).json({ user: res.locals.foundUser });
+  (req, res, next) => {
+    if (!res.locals.session) return res.status(401).json({
+      error: 'User is not authorized.'
+    });
+    if (res.locals.session && !res.locals.user) return next(new Error(
+      'Session was found but could not load user.'
+    ));
+
+    res.status(200).json({
+      user: res.locals.user,
+      followedUsers: res.locals.followedUsers,
+      followers: res.locals.followers,
+    });
   }
 );
 
