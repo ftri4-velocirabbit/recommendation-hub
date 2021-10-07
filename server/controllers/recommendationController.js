@@ -1,4 +1,10 @@
-const { searchRecommendations } = require('./../models/recommendationModel');
+const {
+  searchRecommendations,
+  createRecommendation,
+  updateRecommendation: dbUpdateRecommendation,
+  readRecommendation,
+  deleteRecommendation: dbDeleteRecommendation,
+} = require('./../models/recommendationModel');
 const { getFollowed } = require('./../models/userModel');
 
 /**
@@ -31,6 +37,101 @@ async function getFeed(req, res, next) {
   return next();
 }
 
+/**
+ * Middleware: If successful, sets `res.locals.recommendations` to an array of front-end schema Recommendation objects from the user.
+ */
+async function getUserRecommendations(req, res, next) {
+  if (!res.locals.user) return next();
+
+  const recommendations = await searchRecommendations(res.locals.user.username);
+
+  res.locals.recommendations = recommendations.map(rec => ({
+    id: rec.id,
+    title: rec.title,
+    body: rec.body,
+    rating: rec.rating,
+    category: rec.category,
+    date: rec.date,
+    owner: {
+      name: rec.name,
+      username: rec.username,
+    },
+  }));
+  return next();
+}
+
+/**
+ * Middleware: Boolean set at `res.locals.dbStatus` will indicate if the database create was successful.
+ */
+async function saveRecommendation(req, res, next) {
+  if (!res.locals.user) return next();
+
+  const { title, body, category, rating } = req.body;
+  if (typeof title !== 'string'
+    || typeof body !== 'string'
+    || typeof category !== 'string'
+    || typeof rating !== 'number'
+  ) return next({
+    status: 400,
+    error: 'Request body was not formatted correctly.'
+  });
+
+  const result = await createRecommendation(res.locals.user.username, title, body, new Date(), category, rating);
+  res.locals.dbStatus = typeof result === 'object';
+  return next();
+}
+
+/**
+ * Middleware: Boolean set at `res.locals.dbStatus` will indicate if the database update was successful.
+ */
+async function updateRecommendation(req, res, next) {
+  if (!res.locals.user) return next();
+  if (!req.params.id) return next(new Error('Middleware reached without id parameter.'));
+
+  const { title, body, category, rating } = req.body;
+  if ((title && typeof title !== 'string')
+    || (body && typeof body !== 'string')
+    || (category && typeof category !== 'string')
+    || (rating && typeof rating !== 'number')
+  ) return next({
+    status: 400,
+    error: 'Request body was not formatted correctly.'
+  });
+
+  const recommendation = await readRecommendation(req.params.id);
+  if (!recommendation) {
+    res.locals.dbStatus = false;
+    return next();
+  }
+  if (title) recommendation.title = title;
+  if (body) recommendation.body = body;
+  if (category) recommendation.category = category;
+  if (rating) recommendation.rating = rating;
+
+  const result = await dbUpdateRecommendation(
+    res.locals.user.username,
+    recommendation.title,
+    recommendation.body,
+    new Date(),
+    recommendation.category,
+    recommendation.rating
+  );
+  res.locals.dbStatus = typeof result === 'object';
+  return next();
+}
+
+async function deleteRecommendation(req, res, next) {
+  if (!res.locals.user) return next();
+  if (!req.params.id) return next(new Error('Middleware reached without id parameter.'));
+
+  res.locals.dbStatus = await dbDeleteRecommendation(req.params.id);
+  return next();
+}
+
 module.exports = {
   getFeed,
+  getUserRecommendations,
+  saveRecommendation,
+  updateRecommendation,
+  deleteRecommendation
 };
