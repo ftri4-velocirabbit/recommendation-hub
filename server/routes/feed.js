@@ -1,15 +1,17 @@
 const { Router } = require('express');
 
-const { verifyUser } = require('./../controllers/userController');
 const { getFeed } = require('./../controllers/recommendationController');
+const { findSession } = require('./../controllers/sessionController');
+const { getCookie } = require('./../controllers/cookieController');
 
 const router = Router();
 
 router.get('/',
-  // todo verifyUser,
+  getCookie,
+  findSession,
   getFeed,
   (req, res, next) => {
-    if (!res.locals.user) return res.status(401).json({
+    if (!res.locals.session) return res.status(401).json({
       error: 'User is not authorized.'
     });
     if (!res.locals.feed) return next(new Error('Route reached with authorized user but nothing set in res.locals.feed'));

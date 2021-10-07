@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import './CategoryAccordion.scss';
 
@@ -17,7 +17,9 @@ import RecommendationCard from './../common/RecommendationCard.jsx';
 export default function CategoryAccordion({
   category,
   recommendations,
+  handleNewRecommendation,
 }) {
+  const [isAddingNewRec, setIsAddingNewRec] = useState(false);
 
 
   const id = category + '-accordion';
@@ -32,7 +34,12 @@ export default function CategoryAccordion({
         <Typography variant='h6' ml={1}>{category}</Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Button>Add <AddIcon /></Button>
+        {!isAddingNewRec && <Button onClick={() => setIsAddingNewRec(true)}>Add <AddIcon /></Button>}
+        {isAddingNewRec && <RecommendationCard
+          recommendation={{ title: '', body: '', rating: 5, category, owner: {} }}
+          isEditable={true}
+          openEditing={true}
+        />}
         {recommendations &&
           <Stack className='accordion-stack' spacing={5}>
             {recommendations.map(rec => <RecommendationCard

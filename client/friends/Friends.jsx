@@ -13,12 +13,12 @@ export default function Friends({
   followedUsers,
   setUser,
   setFollowedUsers,
+  searchValue,
+  setSearchValue,
 }) {
   /* STATE */
 
-  const [searchValue, setSearchValue] = useState('');
   const [userSearchResult, setUserSearchResult] = useState(null);
-
 
   /* ACTIONS */
 
@@ -27,7 +27,7 @@ export default function Friends({
 
     // when user clears search field, display their follow/followers again
     if (event.target.value.length === 0) setUserSearchResult(null);
-  }, []);
+  }, [setSearchValue]);
 
   const searchOnKeyPress = useCallback((event) => {
     if (event.key === 'Enter') {
@@ -119,6 +119,8 @@ export default function Friends({
 
   /* RENDER */
 
+  const showSearchResult = searchValue.length !== 0 && userSearchResult !== null;
+
   return (
     <div id="friends-container">
       <TextField
@@ -128,7 +130,7 @@ export default function Friends({
         onKeyPress={searchOnKeyPress}
         size="small"
       />
-      {!userSearchResult && <>
+      {!showSearchResult && <>
         <Followers
           followers={followers}
         />
@@ -137,7 +139,7 @@ export default function Friends({
           unfollowUser={unfollowUser}
         />
       </>}
-      {userSearchResult && <SearchResult
+      {showSearchResult && <SearchResult
         users={userSearchResult}
         followUser={followUser}
       />}

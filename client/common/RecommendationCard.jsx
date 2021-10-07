@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 import './RecommendationCard.scss';
 import categories from '../../shared/categories.json';
+import useTextField from './../hooks/useTextField';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -17,7 +18,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 
@@ -27,31 +27,30 @@ function getFirstWordLetters(string) {
 
 export default function RecommendationCard({
   isEditable = false,
-  recommendation: { id, title, body, rating, category, date, owner: { name, username } }
+  openEditing = false,
+  recommendation: { id, title, body, rating, category, date, owner: { name, username } },
 }) {
   // TODO add modal to unfollow user when clicking on Avatar
 
-  // TODO add ability to edit recommendation
-  const [edit, setEdit] = useState(false);
-  function handleEdit () {
-    setEdit(!edit);
+  const [isEditing, setIsEditing] = useState(openEditing);
+  function handleEdit() {
+    setIsEditing(!isEditing);
     return;
   }
 
-  const [titleState, setTitleState] = useState(title);
-  const [bodyState, setBodyState] = useState(body);
-  function handleSubmit (e) {
-    e.preventDefault();
+  const [titleFieldValue, onTitleFieldValue] = useTextField();
+  const [bodyFieldValue, onBodyFieldValue] = useTextField();
+
+  function handleSubmit(event) {
     const updatedRec = {
-      title: titleState,
-      body: bodyState,
+      title: titleFieldValue,
+      body: bodyFieldValue,
     };
     console.log('updatedRec', updatedRec);
-    return;
+    event.preventDefault();
   }
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,12 +58,17 @@ export default function RecommendationCard({
     setAnchorEl(null);
   };
 
-  const categoriesMenuList = [];
-  for (let category of categories) {
-    categoriesMenuList.push(<MenuItem key={category} onClick={() => {console.log(category); handleClose();}}>{category}</MenuItem>);
-  }
 
   // STRETCH add like button functionality
+
+  /* RENDER */
+
+  const categoriesMenuList = [];
+  for (let category of categories) {
+    categoriesMenuList.push(<MenuItem key={category} onClick={() => { console.log(category); handleClose(); }}>{category}</MenuItem>);
+  }
+
+  const open = Boolean(anchorEl);
 
   return (
     <Card className='feed-recommendation'>
@@ -77,25 +81,24 @@ export default function RecommendationCard({
             </Avatar>
           }
           title={name}
-
-          subheader={date.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}
+          subheader={new Date(date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}
         />
         {/* <Typography variant="h6" color="text.primary" align="right">{category}</Typography> */}
         {!isEditable && <Typography variant="h6" color="text.primary" align="right">{category}</Typography>}
-        {isEditable && !edit && <Typography variant="h6" color="text.primary" align="right">{category}</Typography>}
-        {isEditable && edit && 
+        {isEditable && !isEditing && <Typography variant="h6" color="text.primary" align="right">{category}</Typography>}
+        {isEditable && isEditing &&
           <div>
-          <Button
+            <Button
               id="basic-button"
               aria-controls="basic-menu"
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
-              defaultValue={title} 
+              defaultValue={title}
               onClick={handleClick}
             >
               {category}
             </Button>
-            <Menu 
+            <Menu
               id="basic-menu"
               anchorEl={anchorEl}
               open={open}
@@ -105,7 +108,7 @@ export default function RecommendationCard({
               }}>
               {categoriesMenuList}
             </Menu>
-            </div>}
+          </div>}
         <CardActions disableSpacing>
           {!isEditable && <IconButton aria-label="heart this">
             <FavoriteIcon />
@@ -116,31 +119,40 @@ export default function RecommendationCard({
         </CardActions>
       </Stack>
       <CardContent>
-        {/* <Typography variant="h6" color="text.secondary">{title}</Typography> */}
-        {/* <Typography variant="body1" color="text.secondary">{body}</Typography> */}
-
         {!isEditable && <div>
           <Typography variant="h6" color="text.secondary">{title}</Typography>
           <Typography variant="body1" color="text.secondary">{body}</Typography>
         </div>}
-        {isEditable && !edit && <div>
+
+        {isEditable && !isEditing && <div>
           <Typography variant="h6" color="text.secondary">{title}</Typography>
           <Typography variant="body1" color="text.secondary">{body}</Typography>
         </div>}
-        {isEditable && edit && <div>
 
+        {isEditable && isEditing && <div>
           <form onSubmit={handleSubmit}>
-            
             <InputLabel htmlFor="my-title">Title</InputLabel>
-            <TextField id="my-title" variant="outlined" aria-describedby="my-title" defaultValue={title} onChange={e => setTitleState(e.target.value)}/>
+            <TextField
+              id="my-title"
+              variant="outlined"
+              aria-describedby="my-title"
+              defaultValue={titleFieldValue}
+              onChange={onTitleFieldValue}
+            />
             <InputLabel htmlFor="my-recommendation">Recommendation</InputLabel>
-            <TextField id="my-recommendation" fullWidth={true} variant="outlined" multiline
-              maxRows={4} aria-describedby="my-recommendation" defaultValue={body} onChange={e => setBodyState(e.target.value)}/>
+            <TextField
+              id="my-recommendation"
+              fullWidth={true}
+              variant="outlined"
+              multiline
+              maxRows={4}
+              aria-describedby="my-recommendation"
+              defaultValue={bodyFieldValue}
+              onChange={onBodyFieldValue}
+            />
             <Button type="submit">Save</Button>
           </form>
         </div>}
-
-
       </CardContent>
     </Card>
   );

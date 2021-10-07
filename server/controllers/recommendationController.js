@@ -5,16 +5,16 @@ const {
   readRecommendation,
   deleteRecommendation: dbDeleteRecommendation,
 } = require('./../models/recommendationModel');
-const { getFollowed } = require('./../models/userModel');
+const { getPeopleUserFollows } = require('./../models/userModel');
 
 /**
  * Middleware: If successful, sets `res.locals.feed` to an array of Recommendation objects with 
  * { id, username, name, title, body, date, category, rating } schema.
  */
 async function getFeed(req, res, next) {
-  if (!res.locals.user) return next();
+  if (!res.locals.session) return next();
 
-  const followedUsers = await getFollowed(res.locals.user.username);
+  const followedUsers = await getPeopleUserFollows(res.locals.session.username);
 
   let recommendations = [];
   for (const user of followedUsers) {
@@ -41,9 +41,9 @@ async function getFeed(req, res, next) {
  * Middleware: If successful, sets `res.locals.recommendations` to an array of front-end schema Recommendation objects from the user.
  */
 async function getUserRecommendations(req, res, next) {
-  if (!res.locals.user) return next();
+  if (!res.locals.session) return next();
 
-  const recommendations = await searchRecommendations(res.locals.user.username);
+  const recommendations = await searchRecommendations(res.locals.session.username);
 
   res.locals.recommendations = recommendations.map(rec => ({
     id: rec.id,

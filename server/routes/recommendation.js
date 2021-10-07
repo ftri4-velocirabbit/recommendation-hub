@@ -1,6 +1,8 @@
 const { Router } = require('express');
 
-const { verifyUser } = require('./../controllers/userController');
+const { searchUsers } = require('../controllers/userController');
+const { findSession } = require('./../controllers/sessionController');
+const { getCookie } = require('./../controllers/cookieController');
 const {
   getUserRecommendations,
   saveRecommendation,
@@ -11,15 +13,16 @@ const {
 const router = Router();
 
 router.get('/',
-  // todo verifyUser,
+  getCookie,
+  findSession,
   getUserRecommendations,
   (req, res, next) => {
-    if (!res.locals.user) return res.status(401).json({
+    if (!res.locals.session) return res.status(401).json({
       error: 'User is not authorized.'
     });
-    if (!res.local.recommendations) return next(new Error('Route reached with authorized user and but res.local.recommendations was not set.'));
+    if (!res.locals.recommendations) return next(new Error('Route reached with authorized user and but res.local.recommendations was not set.'));
 
-    return res.json(res.local.recommendations);
+    return res.json({ recommendations: res.locals.recommendations });
   }
 );
 
