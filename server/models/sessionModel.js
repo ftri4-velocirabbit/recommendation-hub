@@ -27,17 +27,21 @@ async function readSession(sid) {
 }
 
 /**
- * @returns Database session object or undefined if no session exists.
+ * @returns Database session object or undefined if no session exists with that sid.
  */
 async function updateSession(sid, expires) {
-  const result = await pool.query(`
-    UPDATE sessions
-    SET expires = $2
-    WHERE id = $1
-    RETURNING *;
-  `, [sid, expires]);
+  try {
+    const result = await pool.query(`
+      UPDATE sessions
+      SET expires = $2
+      WHERE id = $1
+      RETURNING *;
+    `, [sid, expires]);
 
-  return result.rows[0];
+    return result.rows[0];
+  } catch (_) {
+    return;
+  }
 }
 
 /**

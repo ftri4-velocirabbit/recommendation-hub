@@ -24,16 +24,29 @@ async function createUser(username, name, email, lastLoginIp, lastLoginDate, pas
  * @returns Database user object or undefined if no user found.
  */
 async function readUser(username) {
-	const result = await pool.query(
-		`
+	const result = await pool.query(`
     SELECT username, name, email, passhash, last_login_ip, last_login_date
     FROM users
     WHERE username = $1;
-  `,
-		[username]
-	);
+  `, [username]);
 
 	return result.rows[0];
+}
+
+/**
+ * @returns Array of database user objects, empty if no matches were found.
+ */
+async function searchUsers(term) {
+	// search for users by match in name, username, or email
+	term = `%${term}%`;
+
+	const result = await pool.query(`
+    SELECT username, name, email, passhash, last_login_ip, last_login_date
+    FROM users
+    WHERE username ILIKE $1 OR name ILIKE $1 OR email ILIKE $1;
+  `, [term]);
+
+	return result.rows;
 }
 
 /**
@@ -161,4 +174,5 @@ module.exports = {
 	getFollowed,
 	getFollowers,
 	unfollowUser,
+	searchUsers
 };

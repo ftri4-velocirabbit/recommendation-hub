@@ -1,11 +1,12 @@
-const express = require('express');
+const { Router } = require('express');
+
 const userController = require('../controllers/userController');
 const sessionController = require('../controllers/sessionController');
 const cookieController = require('../controllers/cookieController');
-const router = express.Router();
 
-router.post(
-	'/',
+const router = Router();
+
+router.post('/',
 	userController.verifyUser,
 	sessionController.updateSession,
 	sessionController.deleteSession,

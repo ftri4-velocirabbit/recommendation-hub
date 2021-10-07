@@ -1,24 +1,17 @@
-const express = require('express');
-const userController = require('../controllers/userController');
-const sessionController = require('../controllers/sessionController');
-const cookieController = require('../controllers/cookieController');
-const router = express.Router();
+const { Router } = require('express');
 
-router.get('/user', userController.getUser, (req, res) => {
-	res.status(200).json(res.locals.foundUser);
-});
+const userRouter = require('./user');
+const searchRouter = require('./search');
+const profileRouter = require('./profile');
+const feedRouter = require('./feed');
+const recommendationRouter = require('./recommendation');
 
-router.post('/user', userController.createUser, sessionController.createSession, cookieController.createCookie, (req, res) => {
-	// console.log(res.locals);
-	res.status(200).json(res.locals.user);
-});
+const router = Router();
 
-router.patch('/user/:username', userController.updateUser, (req, res) => {
-	res.status(200).json(res.locals.user);
-});
-
-router.delete('/user/:username', userController.deleteUser, (req, res) => {
-	res.status(200).json(res.locals.deletedUser);
-});
+router.use('/user', userRouter);
+router.use('/search', searchRouter);
+router.use('/profile', profileRouter);
+router.use('/feed', feedRouter);
+router.use('/recommendation', recommendationRouter);
 
 module.exports = router;
