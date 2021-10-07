@@ -40,9 +40,12 @@ async function updateSession(req, res, next) {
  * Middleware: Sets `res.locals.session` with database session object if session was found for user.
  */
 async function findSession(req, res, next) {
-	if (!res.locals.user) return next();
+	if (!res.locals.user && !res.locals.sid) return next();
 
-	let session = await sessionModel.findSession(res.locals.user.username);
+	let session;
+	if (res.locals.user) session = await sessionModel.findSession(res.locals.user.username);
+	else session = await sessionModel.readSession(res.locals.sid);
+
 	if (session) res.locals.session = session;
 
 	return next();

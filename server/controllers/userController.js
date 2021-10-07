@@ -1,7 +1,12 @@
 const bcrypt = require('bcrypt');
 
-const sessionModel = require('../models/sessionModel');
-const userModel = require('../models/userModel');
+const {
+	createUser: umCreateUser,
+	readUser,
+	getPeopleThatFollowUser,
+	getPeopleUserFollows,
+	updateUser: umUpdateUser,
+} = require('../models/userModel');
 const { isValidName, isValidEmail, isValidPassword, isValidUsername } = require('./../../shared/validation');
 
 const SALT_WORK_FACTOR = 10;
@@ -29,7 +34,7 @@ async function createUser(req, res, next) {
 		const ip = req.headers['x-forwarded-for'] || req.ip;
 		const passhash = await bcrypt.hash(password, SALT_WORK_FACTOR);
 
-		const user = await userModel.createUser(username, name, email, ip, new Date(), passhash);
+		const user = await umCreateUser(username, name, email, ip, new Date(), passhash);
 		if (!user) {
 			res.locals.error = 'Username already exists.';
 			return next();
@@ -48,33 +53,29 @@ async function createUser(req, res, next) {
 }
 
 /**
- * @returns user object with followed and followers in res.locals or error
+ * Middleware: Obtain information about the requesting user. If successful, `res.locals.user` will be set to front-end user schema,
+ * and `res.locals.followedUsers` will be set to array of front-end schema UserListItem, and `res.locals.followers` will be
+ * set to array of front-end schema UserListItem.
  */
 async function getUser(req, res, next) {
-	try {
-		const userObj = {};
-		const session = await sessionModel.readSession(req.cookies.sid);
-		userObj.user = await userModel.readUser(session.username);
+	if (!res.locals.session) return next();
 
-		userObj.followedUsers = [];
-		const followedArray = await userModel.getFollowed(session.username);
-		for (let followed of followedArray) {
-			const followedUser = await userModel.readUser(followed.followed_username);
-			userObj.followedUsers.push(followedUser);
-		}
+	const user = await readUser(res.locals.session.username);
+	if (!user) return next();
 
-		userObj.followers = [];
-		const followersArray = await userModel.getFollowers(session.username);
-		for (let follower of followersArray) {
-			const followerUser = await userModel.readUser(follower.username);
-			userObj.followers.push(followerUser);
-		}
+	const followedUsers = await getPeopleUserFollows(user.username);
+	const followers = await getPeopleThatFollowUser(user.username);
 
-		res.locals.foundUser = userObj;
-		return next();
-	} catch (error) {
-		return next(error);
-	}
+
+	res.locals.user = {
+		name: user.name,
+		username: user.username,
+		email: user.email,
+	};
+	res.followedUsers = followedUsers;
+	res.followers = followers;
+
+	return next();
 }
 
 /**
@@ -91,7 +92,7 @@ async function verifyUserLogin(req, res, next) {
 			return next();
 		}
 
-		const user = await userModel.readUser(username);
+		const user = await readUser(username);
 		if (!user) {
 			res.locals.error = 'Username does not exist.';
 			return next();
@@ -106,7 +107,7 @@ async function verifyUserLogin(req, res, next) {
 
 		// update last ip and last login date in users table
 		const ip = req.headers['x-forwarded-for'] || req.ip;
-		await userModel.updateUser(user.username, user.name, user.email, ip, new Date());
+		await umUpdateUser(user.username, user.name, user.email, ip, new Date());
 
 		res.locals.user = user;
 		return next();
@@ -121,7 +122,7 @@ async function verifyUserLogin(req, res, next) {
 async function updateUser(req, res, next) {
 	try {
 		const { username } = req.params;
-		const user = await userModel.readUser(username);
+		const user = await readUser(username);
 		let { last_login_ip, last_login_date, passhash } = user;
 		const { password } = req.body;
 		const name = req.body.name || user.name;
@@ -130,8 +131,7 @@ async function updateUser(req, res, next) {
 		if (req.body.password) {
 			passhash = await bcrypt.hash(password, SALT_WORK_FACTOR);
 		}
-		const updatedUser = await userModel.updateUser(username, name, email, last_login_ip, last_login_date, passhash);
-		console.log(updatedUser);
+		const updatedUser = await umUpdateUser(username, name, email, last_login_ip, last_login_date, passhash);
 		res.locals.user = updatedUser;
 		return next();
 	} catch (error) {
@@ -145,7 +145,7 @@ async function updateUser(req, res, next) {
 async function deleteUser(req, res, next) {
 	try {
 		const { username } = req.params;
-		const result = await userModel.deleteUser(username);
+		const result = await deleteUser(username);
 		res.locals.deletedUser = result;
 		return next();
 	} catch (error) {
@@ -161,7 +161,7 @@ async function searchUsers(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.term) return next(new Error('Middleware reached without term parameter.'));
 
-	res.locals.users = (await userModel.searchUsers(req.params.term))
+	res.locals.users = (await searchUsers(req.params.term))
 		.map(user => ({
 			name: user.name,
 			username: user.username,
@@ -179,7 +179,7 @@ async function getUserProfile(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	const result = await userModel.readUser(res.params.username);
+	const result = await readUser(res.params.username);
 
 	res.locals.user = {
 		name: result.name,
@@ -198,10 +198,10 @@ async function followUser(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	res.locals.dbStatus = await userModel.followUser(res.locals.user.username, req.params.username);
+	res.locals.dbStatus = await followUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
-		res.locals.followedUsers = await userModel.getPeopleUserFollows(res.locals.user.username);
+		res.locals.followedUsers = await getPeopleUserFollows(res.locals.user.username);
 	}
 
 	return next();
@@ -216,10 +216,10 @@ async function unfollowUser(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	res.locals.dbStatus = await userModel.unfollowUser(res.locals.user.username, req.params.username);
+	res.locals.dbStatus = await unfollowUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
-		res.locals.followedUsers = await userModel.getPeopleThatFollowUser(res.locals.user.username);
+		res.locals.followedUsers = await getPeopleThatFollowUser(res.locals.user.username);
 	}
 
 	return next();

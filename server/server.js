@@ -47,6 +47,7 @@ app.use((err, req, res, next) => {
 const databaseModel = require('./models/databaseModel');
 databaseModel.destroyDatabase()
 	.then(() => databaseModel.initDatabase())
+	.then(() => databaseModel.prefillDatabase())
 	.then(() => app.listen(PORT, HOST, () => console.log(`Server listening on http://${HOST}:${PORT}`)));
 
 // app.listen(PORT, HOST, () => console.log(`Server listening on http://${HOST}:${PORT}`))
