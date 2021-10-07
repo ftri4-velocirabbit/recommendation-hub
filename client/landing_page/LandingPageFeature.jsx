@@ -9,28 +9,28 @@ import CarouselItem from './CarouselItem.jsx';
 
 const slides = [
   {
-    caption: "incredible promotional message",
-    image: "https://www.jahangeer.com/wp-content/uploads/2014/12/2400x780_Movie2014Banner.jpg",
+    caption: "Find recommendations based on your interests!",
+    image: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/6991e060-2384-4a9a-a7b5-4ad5bf84a978/dcdhzqj-738d5406-eea3-4693-8ad5-5a0b403dd8c1.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzY5OTFlMDYwLTIzODQtNGE5YS1hN2I1LTRhZDViZjg0YTk3OFwvZGNkaHpxai03MzhkNTQwNi1lZWEzLTQ2OTMtOGFkNS01YTBiNDAzZGQ4YzEuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.S8GGgxeqoQJmjArLWSeyXTmNMEwBn5xKifakrT2X38g",
     page: 0
   },
   {
-    caption: "inspiring marketing motto",
-    image: "https://eugenspivak.com/wp-content/uploads/2020/05/Book-Marketing-Tips-How-to-Increase-Book-Sales-From-Multi-Award-Winning-Author.jpg",
+    caption: "View all recommendations from people you follow.",
+    image: "https://i.pinimg.com/564x/d1/91/53/d19153b53d71a6a0a9493440680947ed.jpg",
     page: 1
   },
   {
-    caption: "cheeseburgers sell themselves",
-    image: "https://dynaimage.cdn.cnn.com/cnn/c_fill,g_auto,w_1200,h_675,ar_16:9/https%3A%2F%2Fcdn.cnn.com%2Fcnnnext%2Fdam%2Fassets%2F200917151634-national-cheeseburger-day-2020-stock.jpg",
+    caption: "Share recommendations with your friends!",
+    image: "",
     page: 2
   },
   {
-    caption: "award winning music",
-    image: "https://thumbs.dreamstime.com/b/neon-music-vibes-lettering-text-black-brick-background-night-purple-blue-vivid-lights-word-inscription-title-glow-183974382.jpg",
+    caption: "Widen your horizon.",
+    image: "https://i.pinimg.com/564x/2c/a9/5b/2ca95b3cd1b6a3d80fcf506dac0da9f9.jpg",
     page: 3
   },
   {
-    caption: "discover the best algorithms here!",
-    image: "https://tekkieuni.com/wp-content/uploads/2020/01/algorithm-for-kids.jpg",
+    caption: "Allow yourself to grow.",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFL4vBsgCU9zGJBFmS_6gQSwVsssWt7KOApA&usqp=CAU",
     page: 4
   }
 ];
