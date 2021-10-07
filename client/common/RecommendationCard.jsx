@@ -26,11 +26,13 @@ function getFirstWordLetters(string) {
 }
 
 export default function RecommendationCard({
-  recommendation: { id, title, body, rating, category, date, owner: { name, username } },
+  recommendation: { id, title, body, rating, category, date, owner: { name } },
   isEditable = false,
   openEditing = false,
   cancelEditing,
   submitNewRecommendation,
+  submitUpdateRecommendation,
+  submitDeleteRecommendation,
 }) {
   // STRETCH add like button functionality
   // TODO add modal to unfollow user when clicking on Avatar
@@ -38,8 +40,8 @@ export default function RecommendationCard({
   /* STATE */
 
   const [isEditing, setIsEditing] = useState(openEditing);
-  const [titleFieldValue, onTitleFieldValue] = useTextField();
-  const [bodyFieldValue, onBodyFieldValue] = useTextField();
+  const [titleFieldValue, onTitleFieldValue] = useTextField(title);
+  const [bodyFieldValue, onBodyFieldValue] = useTextField(body);
   const [categoryFieldValue, onCategoryFieldValue] = useTextField(category);
 
 
@@ -54,8 +56,20 @@ export default function RecommendationCard({
     event.preventDefault();
 
     // TODO implement rating and editing of rating
-    submitNewRecommendation(titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
-  }, [bodyFieldValue, categoryFieldValue, rating, submitNewRecommendation, titleFieldValue]);
+    if (openEditing) return submitNewRecommendation(titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
+    setIsEditing(false);
+    return submitUpdateRecommendation(id, titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
+  }, [bodyFieldValue, categoryFieldValue, id, openEditing, rating, submitNewRecommendation, submitUpdateRecommendation, titleFieldValue]);
+
+  const handleDelete = useCallback(() => {
+    setIsEditing(false);
+    submitDeleteRecommendation(id);
+  }, [id, submitDeleteRecommendation]);
+
+  const handleCancel = useCallback(() => {
+    if (openEditing) return cancelEditing();
+    setIsEditing(false);
+  }, [cancelEditing, openEditing]);
 
 
   /* RENDER */
@@ -65,7 +79,7 @@ export default function RecommendationCard({
       <Stack className='feed-recommendation-header'>
         {!isEditing && <CardHeader
           avatar={
-            <Avatar sx={{ bgcolor: '#817f70'}}>
+            <Avatar sx={{ bgcolor: '#817f70' }}>
               {getFirstWordLetters(name)}
               {/* TODO pick a random color per user */}
             </Avatar>
@@ -97,7 +111,7 @@ export default function RecommendationCard({
           {!isEditable && <IconButton aria-label="heart this">
             <FavoriteIcon />
           </IconButton>}
-          {isEditable && !openEditing && <IconButton aria-label="edit recommendation" onClick={handleEdit}>
+          {isEditable && !openEditing && !isEditing && <IconButton aria-label="edit recommendation" onClick={handleEdit}>
             <EditIcon />
           </IconButton>}
         </CardActions>
@@ -115,27 +129,32 @@ export default function RecommendationCard({
 
         {isEditable && isEditing && <div>
           <form onSubmit={handleSaveSubmit}>
-            <InputLabel htmlFor="my-title">Title</InputLabel>
-            <TextField
-              id="my-title"
-              variant="outlined"
-              aria-describedby="my-title"
-              defaultValue={titleFieldValue}
-              onChange={onTitleFieldValue}
-            />
-            <InputLabel htmlFor="my-recommendation">Recommendation</InputLabel>
-            <TextField
-              id="my-recommendation"
-              fullWidth={true}
-              variant="outlined"
-              multiline
-              maxRows={4}
-              aria-describedby="my-recommendation"
-              defaultValue={bodyFieldValue}
-              onChange={onBodyFieldValue}
-            />
-            <Button type="submit" variant="outlined" onClick={handleSaveSubmit}>Save</Button>
-            <Button variant="outlined" color="error" onClick={cancelEditing}>Cancel</Button>
+            <Stack spacing={2}>
+              <TextField
+                id="my-title"
+                variant="outlined"
+                label="Title"
+                aria-describedby="my-title"
+                defaultValue={titleFieldValue}
+                onChange={onTitleFieldValue}
+              />
+              <TextField
+                id="my-recommendation"
+                fullWidth={true}
+                variant="outlined"
+                label="Recommendation"
+                multiline
+                maxRows={4}
+                aria-describedby="my-recommendation"
+                defaultValue={bodyFieldValue}
+                onChange={onBodyFieldValue}
+              />
+            </Stack>
+            <Stack className="recommendation-buttons-nav" direction="row" mt={2}>
+              <Button type="submit" variant="contained" size='small' onClick={handleSaveSubmit}>Save</Button>
+              <Button variant="contained" color="error" size='small' onClick={handleCancel}>Cancel</Button>
+              {!openEditing && <Button variant="contained" color="error" size='small' onClick={handleDelete}>Delete</Button>}
+            </Stack>
           </form>
         </div>}
       </CardContent>
