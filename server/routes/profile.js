@@ -1,6 +1,8 @@
 const { Router } = require('express');
 
-const { verifyUser, getUserProfile, followUser, unfollowUser } = require('./../controllers/userController');
+const { getUser, getUserProfile, followUser, unfollowUser } = require('./../controllers/userController');
+const { findSession } = require('./../controllers/sessionController');
+const { getCookie } = require('./../controllers/cookieController');
 
 const router = Router();
 
@@ -26,10 +28,12 @@ router.get('/:username',
  * Route used to follow a user.
  */
 router.post('/:username',
-  // todo verify user
+  getCookie,
+  findSession,
+  getUser,
   followUser,
   (req, res, next) => {
-    if (!res.locals.user) return res.status(401).json({
+    if (!res.locals.session) return res.status(401).json({
       error: 'User is not authorized.'
     });
     if (!res.locals.dbStatus) return res.status(400).json({
