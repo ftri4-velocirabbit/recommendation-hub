@@ -28,7 +28,7 @@ export default function Body({
     <Stack id='body' direction='row'>
       <VerticalNavBar setPage={onPageNav} />
       {page === 'feed' && <Feed setUser={setUser} />}
-      {page === 'recommendations' && <MyRecommendation />}
+      {page === 'recommendations' && <MyRecommendation setUser={setUser} />}
       {page === 'friends' && <Friends
         followers={followers}
         followedUsers={followedUsers}
@@ -37,7 +37,7 @@ export default function Body({
         searchValue={searchValue}
         setSearchValue={setSearchValue}
       />}
-      {page === 'settings' && <Settings />}
+      {page === 'settings' && <Settings setUser={setUser} />}
     </Stack>
   );
 }

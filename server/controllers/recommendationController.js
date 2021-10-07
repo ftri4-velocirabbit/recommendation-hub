@@ -41,9 +41,9 @@ async function getFeed(req, res, next) {
  * Middleware: If successful, sets `res.locals.recommendations` to an array of front-end schema Recommendation objects from the user.
  */
 async function getUserRecommendations(req, res, next) {
-  if (!res.locals.user) return next();
+  if (!res.locals.session) return next();
 
-  const recommendations = await searchRecommendations(res.locals.user.username);
+  const recommendations = await searchRecommendations(res.locals.session.username);
 
   res.locals.recommendations = recommendations.map(rec => ({
     id: rec.id,
