@@ -10,24 +10,25 @@ export default function Following({
   followedUsers,
   unfollowUser,
 }) {
-
-  let followedAvatars = followedUsers.map(user =>
-    <UserAvatar
-      key={user.username}
-      name={user.name}
-      username={user.username}
-      unfollowUser={unfollowUser}
-      canUnfollow={true}
-    />
-  );
-
-  
+ 
   return (
-    <Stack direction="row" spacing={2} mt={4} >
+    <div>
       <Typography variant='h4' mb={2}>Following</Typography>
-      <section id='followedAvatars'>
-        {followedAvatars}
-      </section>
-    </Stack>
+      <Stack direction="row" spacing={2} mt={4} >
+        <section id='followedAvatars'>
+          {followedUsers.map(user =>
+            <div className='avatarContainer'>
+            <UserAvatar
+              key={user.username}
+              name={user.name}
+              username={user.username}
+              unfollowUser={unfollowUser}
+              canUnfollow={true}
+            />
+            </div>
+          )}
+        </section>
+      </Stack>
+    </div>
   );
 }
