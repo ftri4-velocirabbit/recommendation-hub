@@ -5,54 +5,41 @@ import RecommendationCard from './../common/RecommendationCard.jsx';
 
 import Stack from '@mui/material/Stack';
 
-export default function Feed() {
+export default function Feed({
+  setUser,
+}) {
   const [recommendations, setRecommendations] = useState(null);
 
   useEffect(() => {
-
-    // TODO ajax request for recommendations
-
-    setRecommendations([
-      {
-        id: 1,
-        title: 'Favorite movie',
-        body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-        malesuada lacus ex, sit amet blandit leo lobortis eget.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Suspendisse
-        malesuada lacus ex, sit amet blandit leo `,
-        rating: 4,
-        category: 'Movies',
-        date: new Date(),
-        owner: {
-          name: 'Miguel Hernandez',
-          username: 'miguel'
-        }
+    fetch('/api/feed', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
       },
-      {
-        id: 2,
-        title: 'Worst movie',
-        body: 'Some scary movie',
-        rating: 0,
-        category: 'Movies',
-        date: new Date(),
-        owner: {
-          name: 'Miguel Hernandez',
-          username: 'miguel'
-        }
-      },
-      {
-        id: 3,
-        title: 'Worst movie',
-        body: 'Some scary movie',
-        rating: 0,
-        category: 'Movies',
-        date: new Date(),
-        owner: {
-          name: 'Miguel Hernandez',
-          username: 'miguel'
-        }
+    }).then(async (response) => {
+      const body = await response.json();
+
+      if (response.status === 401) {
+        // User lost session
+        return setUser(null);
       }
-    ]);
-  }, []); // todo no array, so it will be called on each component render
+
+      if (response.status !== 200) {
+        // unknown server error
+        console.error(`Server responded to GET /api/search/ with status ${response.status}`);
+        return console.error(body);
+      }
+
+      setRecommendations(body.recommendations.map(rec => {
+        // convert date to JS date objects
+        rec.date = new Date(rec.date);
+        return rec;
+      }));
+    });
+  }, [setUser]);
+
+  // Sort feed in reverse chronological order
+  if (recommendations) recommendations.sort((recA, recB) => recB.date - recA.date);
 
   return (
     <Stack id='feed' spacing={5}>
