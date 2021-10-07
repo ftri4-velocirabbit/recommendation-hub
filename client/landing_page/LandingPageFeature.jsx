@@ -20,7 +20,7 @@ const slides = [
   },
   {
     caption: "Share recommendations with your friends!",
-    image: "",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRo3wvibFC1J57VFUw-c5gS8w2HeLEgUna5kA&usqp=CAU",
     page: 2
   },
   {

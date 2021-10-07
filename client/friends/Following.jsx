@@ -13,7 +13,7 @@ export default function Following({
  
   return (
     <div>
-      <Typography variant='h4' mb={2}>Following</Typography>
+      <Typography variant='h4' mb={2} mt={3}>Following</Typography>
       <Stack direction="row" spacing={2} mt={4} >
         <section id='followedAvatars'>
           {followedUsers.map(user =>
