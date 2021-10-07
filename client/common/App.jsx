@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 
 import './App.scss';
@@ -32,21 +32,22 @@ export default function App() {
 
   /* ACTIONS */
 
-  useState(async () => {
+  useEffect(() => {
     // attempt to grab user info in case user has valid session cookie
-    const response = await fetch('/api/user', {
+    fetch('/api/user', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
       },
+    }).then(async (response) => {
+      const body = await response.json();
+
+      if (response.status !== 200) return; // user does not have a valid session
+
+      setUser(body.user);
+      setFollowedUsers(body.followedUsers);
+      setFollowers(body.followers);
     });
-    const body = await response.json();
-
-    if (response.status !== 200) return; // user does not have a valid session
-
-    setUser(body.user);
-    setFollowedUsers(body.followedUsers);
-    setFollowers(body.followers);
   }, []);
 
   const handleLoginRequest = useCallback(async (username, password) => {

@@ -27,7 +27,7 @@ export default function Body({
   return (
     <Stack id='body' direction='row'>
       <VerticalNavBar setPage={onPageNav} />
-      {page === 'feed' && <Feed />}
+      {page === 'feed' && <Feed setUser={setUser} />}
       {page === 'recommendations' && <MyRecommendation />}
       {page === 'friends' && <Friends
         followers={followers}
