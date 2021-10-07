@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 
+// TODO refactor to using userController namespace
 const {
 	createUser: umCreateUser,
 	readUser,
@@ -8,6 +9,7 @@ const {
 	updateUser: umUpdateUser,
 	searchUsers: umSearchUsers,
 	followUser: umFollowUser,
+	unfollowUser: umUnfollowUser,
 } = require('../models/userModel');
 const { isValidName, isValidEmail, isValidPassword, isValidUsername } = require('./../../shared/validation');
 
@@ -220,10 +222,12 @@ async function unfollowUser(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	res.locals.dbStatus = await unfollowUser(res.locals.user.username, req.params.username);
+	req.params.username = decodeURIComponent(req.params.username);
+
+	res.locals.dbStatus = await umUnfollowUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
-		res.locals.followedUsers = await getPeopleThatFollowUser(res.locals.user.username);
+		res.locals.followedUsers = await getPeopleUserFollows(res.locals.user.username);
 	}
 
 	return next();

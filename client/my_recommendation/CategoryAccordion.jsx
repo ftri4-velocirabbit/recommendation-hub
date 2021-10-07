@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 
 import './CategoryAccordion.scss';
 
@@ -13,28 +13,43 @@ import Stack from '@mui/material/Stack';
 
 import RecommendationCard from './../common/RecommendationCard.jsx';
 
-export default function CategoryAccordion({ category, recommendations }) {
-	const id = category + '-accordion';
- 
-	return (
-		<Accordion>
-			<AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={id} id={id}>
-				<Typography variant='h6' ml={1}>
-					{category}
-				</Typography>
-			</AccordionSummary>
-			<AccordionDetails>
-				<Button >
-					Add <AddIcon />
-				</Button>
-				{recommendations && (
-					<Stack className='accordion-stack' spacing={5}>
-						{recommendations.map((rec) => (
-							<RecommendationCard key={rec.id} recommendation={rec} isEditable={true} />
-						))}
-					</Stack>
-				)}
-			</AccordionDetails>
-		</Accordion>
-	);
+
+export default function CategoryAccordion({
+  category,
+  recommendations,
+  handleNewRecommendation,
+}) {
+  const [isAddingNewRec, setIsAddingNewRec] = useState(false);
+
+
+  const id = category + '-accordion';
+
+  return (
+    <Accordion>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls={id}
+        id={id}
+      >
+        <Typography variant='h6' ml={1}>{category}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        {!isAddingNewRec && <Button onClick={() => setIsAddingNewRec(true)}>Add <AddIcon /></Button>}
+        {isAddingNewRec && <RecommendationCard
+          recommendation={{ title: '', body: '', rating: 5, category, owner: {} }}
+          isEditable={true}
+          openEditing={true}
+        />}
+        {recommendations &&
+          <Stack className='accordion-stack' spacing={5}>
+            {recommendations.map(rec => <RecommendationCard
+              key={rec.id}
+              recommendation={rec}
+              isEditable={true}
+            />)}
+          </Stack>
+        }
+      </AccordionDetails>
+    </Accordion>
+  );
 }

@@ -1,73 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { red } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import Typography from "@mui/material//Typography";
+import Button from "@mui/material//Button";
+
 
 function getFirstWordLetters(string) {
   return string.match(/(^\w{1}|\s\w{1})/g).map(char => char.trim().toUpperCase()).join('');
 }
 
 export default function UserAvatar({
-  id,
   name,
+  username,
+  unfollowUser,
+  canUnfollow = false,
 }) {
-
-
-  // TODO fix why id is not passed in
-
-
   const [anchorEl, setAnchorEl] = useState(null);
-  const [userInfo, setUserInfo] = useState([]);
 
+  const handleClick = useCallback((event) => setAnchorEl(event.currentTarget), []);
+  const handleClose = useCallback(() => setAnchorEl(null), []);
+  const onUnfollowClick = useCallback(() => unfollowUser(username), [unfollowUser, username]);
 
-
-
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-
-  const handleUnfollow = (event) => {
-    fetch(`/api/profile/${event.target.value}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-type': 'application/json',
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        const followers = data.followedUser;
-        setUserInfo(followers);
-      });
-  };
-
-
-
-  const open = Boolean(anchorEl);
-
+  const open = anchorEl !== null;
 
   return (
-    <div>
+    <div className='user-avatar'>
+      {/* TODO pick a random color per user */}
       <Avatar sx={{ bgcolor: red[500] }}
-        aria-owns={open ? 'mouse-over-popover' : undefined}
+        aria-owns={username + "-popover"}
         aria-haspopup="true"
-        // onMouseEnter={handlePopoverOpen}
-        // onMouseLeave={handlePopoverClose}
         onClick={handleClick}
       >
-
         {getFirstWordLetters(name)}
-        {/* TODO pick a random color per user */}
       </Avatar>
       <Popover
-        id="mouse-over-popover"
+        id={username + "-popover"}
         open={open}
         anchorEl={anchorEl}
         anchorOrigin={{
@@ -76,11 +45,9 @@ export default function UserAvatar({
         }}
         onClose={handleClose}
       >
-
-        {/* show user's name using {name} */}
-        <Typography sx={{ p: 1 }} id={id}>{name} <br /><button className="newLine" onClick={handleUnfollow} value={id}>Unfollow</button></Typography>
+        <Typography sx={{ p: 1 }} >{name}</Typography>
+        {canUnfollow && <Button variant="outlined" onClick={onUnfollowClick}>Unfollow</Button>}
       </Popover>
     </div>
   );
 }
-
