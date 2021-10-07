@@ -11,7 +11,7 @@ export default function Followers({
 }) {
 
   return (
-    <Stack mt={4}>
+    <Stack direction="row" spacing={2} mt={4}>
       <Typography variant='h4' mb={2}>Followers</Typography>
       {followers.map(user =>
         <UserAvatar

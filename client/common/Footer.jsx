@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 export default function Footer() {
 
   return (
-    <Box id='footer' sx={{ bgcolor: '#3d4235' }}>
+    <Box id='footer' sx={{ bgcolor: '#817f70'}}>
       <Stack direction='row'>
         <Typography id='copywrite' sx={{ flexGrow: 1 }}>&copy; Recommendation&trade;</Typography>
         <Stack>

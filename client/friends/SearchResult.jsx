@@ -14,7 +14,7 @@ export default function SearchResult({
         <Stack key={user.username} direction='row'>
           <Typography mr={2}>{user.name}</Typography>
           <Button
-            variant="outlined"
+            variant="contained"
             size="small"
             onClick={() => followUser(user.name, user.username)}
           >Follow</Button>
