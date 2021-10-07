@@ -1,6 +1,4 @@
-import React, {useState} from 'react';
-
-import Popover from '@mui/material/Popover';
+import React, { useState, useCallback } from 'react';
 
 import './Friends.scss';
 
@@ -8,29 +6,78 @@ import Following from './Following.jsx';
 import Followers from './Followers.jsx';
 
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 
-export default function Friends() {
+export default function Friends({
+  setUser,
+}) {
+  /* STATE */
 
-  const followingArray = [{name: 'Jackie A', username: 'jackiea'}, {name: 'Jake B', username: 'jakb'}, {name: 'David Dohn', username: 'davidd'}];
-    const friends = ['Miguel', 'Duke', 'Jacob', "Michael"]; // need to request from db.
-    const [userInfo, setUserInfo] = useState({});
+  const [followedUsers, setFollowedUsers] = useState([]);
+  const [followers, setFollowers] = useState([]);
 
-    // fetch('/api/user')
-    // .then(res => res.json())
-    // .then(data => setUserInfo(data));
+  const [searchValue, setSearchValue] = useState('');
+  const [userSearchResult, setUserSearchResult] = useState(null);
 
-    return (
-      <div id="friends-container">
-        <Autocomplete
-        disablePortal
-        id="combo-box-demo"
-        options={friends}
-        sx={{ width: 300 }}
-        renderInput={(params) => <TextField {...params} label="Search People" />}
-        />
-      <Followers followers={userInfo.followers}/>
-      <Following followedUsers={userInfo.followedUsers}/>
-      </div>
-    );
+
+  /* ACTIONS */
+
+  const onSearchValueChange = useCallback(event => {
+    setSearchValue(event.target.value);
+
+    // when user clears search field, display their follow/followers again
+    if (event.target.value.length === 0) setUserSearchResult(null);
+  }, []);
+
+  const searchOnKeyPress = useCallback((event) => {
+    if (event.key === 'Enter') {
+      if (searchValue.length > 0) {
+        search(searchValue);
+      }
+      event.preventDefault();
+    }
+  }, [search, searchValue]);
+
+  const search = useCallback(async (searchTerm) => {
+    const response = await fetch('/api/search/' + encodeURIComponent(searchTerm), {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const body = await response.json();
+
+    if (response.status === 401) {
+      // User lost session
+      return setUser(null);
+    }
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /login with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setFollowedUsers
+    setFollowers
+  }, [setUser]);
+
+
+  /* RENDER */
+
+  return (
+    <div id="friends-container">
+      <TextField
+        label="Search People"
+        value={searchValue}
+        onChange={onSearchValueChange}
+        onKeyPress={searchOnKeyPress}
+      // todo add keypress controller
+      />
+      {!userSearchResult && <>
+        <Followers followers={followers} />
+        <Following followedUsers={followedUsers} />
+      </>}
+      {userSearchResult && <h1>TODO: Show results</h1>}
+    </div>
+  );
 }

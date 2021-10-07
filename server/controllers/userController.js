@@ -161,6 +161,8 @@ async function searchUsers(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.term) return next(new Error('Middleware reached without term parameter.'));
 
+	req.params.term = decodeURIComponent(req.params.term);
+
 	res.locals.users = (await searchUsers(req.params.term))
 		.map(user => ({
 			name: user.name,
