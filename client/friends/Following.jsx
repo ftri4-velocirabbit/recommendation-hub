@@ -1,27 +1,28 @@
 import React from 'react';
+
 import UserAvatar from './UserAvatar.jsx';
+
+import Stack from '@mui/material/Stack';
+import Typography from "@mui/material//Typography";
 
 // remember to pass in props when uncommenting
 export default function Following({
-  followedUsers
+  followedUsers,
+  unfollowUser,
 }) {
-  const avatars = [];
-  for (let user of followedUsers) {
-    avatars.push(<UserAvatar key={user.username} name={user.name} />);
-  }
-
-  // uncomment when ready to fetch
-  // const avatars = [];
-  // for (let user of props.followedUsers) {
-  //   avatars.push(<UserAvatar key={user.username} name={user.name} />);
-  // }
-
-  // TODO show default message if empty
 
   return (
-    <div>
-      <h1>Following</h1>
-      {avatars}
-    </div>
+    <Stack mt={4}>
+      <Typography variant='h4' mb={2}>Following</Typography>
+      {followedUsers.map(user =>
+        <UserAvatar
+          key={user.username}
+          name={user.name}
+          username={user.username}
+          unfollowUser={unfollowUser}
+          canUnfollow={true}
+        />
+      )}
+    </Stack>
   );
 }

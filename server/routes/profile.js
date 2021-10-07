@@ -51,14 +51,16 @@ router.post('/:username',
  * Route used to follow a user.
  */
 router.delete('/:username',
-  // todo verify user
+  getCookie,
+  findSession,
+  getUser,
   unfollowUser,
   (req, res, next) => {
-    if (!res.locals.user) return res.status(401).json({
+    if (!res.locals.session) return res.status(401).json({
       error: 'User is not authorized.'
     });
     if (!res.locals.dbStatus) return res.status(400).json({
-      error: 'Failed to follow user.'
+      error: 'Failed to unfollow user.'
     });
     if (!res.locals.followedUsers) return next(
       new Error('Route reached with authorized user and good database access but res.locals.followedUsers was not returned.')
