@@ -1,7 +1,7 @@
 import React from 'react';
 
 import UserAvatar from './UserAvatar.jsx';
-
+import './Following.scss';
 import Stack from '@mui/material/Stack';
 import Typography from "@mui/material//Typography";
 
@@ -11,18 +11,23 @@ export default function Following({
   unfollowUser,
 }) {
 
+  let followedAvatars = followedUsers.map(user =>
+    <UserAvatar
+      key={user.username}
+      name={user.name}
+      username={user.username}
+      unfollowUser={unfollowUser}
+      canUnfollow={true}
+    />
+  );
+
+  
   return (
-    <Stack mt={4}>
+    <Stack direction="row" spacing={2} mt={4} >
       <Typography variant='h4' mb={2}>Following</Typography>
-      {followedUsers.map(user =>
-        <UserAvatar
-          key={user.username}
-          name={user.name}
-          username={user.username}
-          unfollowUser={unfollowUser}
-          canUnfollow={true}
-        />
-      )}
+      <section id='followedAvatars'>
+        {followedAvatars}
+      </section>
     </Stack>
   );
 }

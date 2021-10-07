@@ -58,7 +58,7 @@ export default function Settings() {
           <div>Email: {user.email}</div>
         </div>
         <h1>Privacy Settings</h1>
-        <Button sx={{m: 1}} variant="outlined" onClick={editAccount}>Edit Account Information</Button>
+        <Button sx={{m: 1}} variant="contained" onClick={editAccount}>Edit Account Information</Button>
       </section>}
       {edit && <section>       
         <form onSubmit={saveChanges}>
@@ -76,7 +76,7 @@ export default function Settings() {
           <Button sx={{m: 1}} variant="contained" type="submit">Save</Button>
         </form>
       </section>}
-      <Button sx={{m: 1}} variant="outlined" color="error" onClick={deleteAccount}>Delete Account</Button>
+      <Button sx={{m: 1}} variant="contained" color="error" onClick={deleteAccount}>Delete Account</Button>
     </main>
   );
 }
