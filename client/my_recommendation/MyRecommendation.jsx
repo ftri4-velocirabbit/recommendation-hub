@@ -13,8 +13,6 @@ export default function MyRecommendation({
 }) {
   const [recommendations, setRecommendations] = useState(null);
 
-  console.log({ recommendations }); // ! remove 
-
   useEffect(() => {
     fetch('/api/recommendation', {
       method: 'GET',
@@ -37,17 +35,40 @@ export default function MyRecommendation({
 
       // parse recommendations sorted into recommendations by category
       setRecommendations(categories.reduce((recObj, category) => {
-        recObj[category] = body.recommendations.find(rec => rec, category === category);
+        recObj[category] = body.recommendations.filter(rec => rec.category === category);
         return recObj;
       }, Object.create(null)));
     });
   }, [setUser]);
 
-  const handleNewRecommendation = useCallback((title, body, category, rating) => {
-    console.log('new rec handler');
-    console.log({ title, body, category, rating });
-    // todo AJAX
-  }, []);
+  const handleNewRecommendation = useCallback(async (title, body, category, rating) => {
+    const response = await fetch('/api/recommendation', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ title, body, category, rating }),
+    });
+    const responseBody = await response.json();
+
+    if (response.status === 401) {
+      // User lost session
+      return setUser(null);
+    }
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /api/recommendation/ with status ${response.status}`);
+      return console.error(responseBody);
+    }
+
+    // parse recommendations sorted into recommendations by category
+    setRecommendations(categories.reduce((recObj, category) => {
+      recObj[category] = responseBody.recommendations.filter(rec => rec.category === category);
+      return recObj;
+    }, Object.create(null)));
+  }, [setUser]);
 
   return (
     <Stack id='my-recommendation'>

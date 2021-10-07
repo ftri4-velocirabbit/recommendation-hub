@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import './CategoryAccordion.scss';
 
@@ -21,6 +21,11 @@ export default function CategoryAccordion({
 }) {
   const [isAddingNewRec, setIsAddingNewRec] = useState(false);
 
+  const cancelEditing = useCallback(() => setIsAddingNewRec(false), []);
+  const submitNewRecommendation = useCallback((title, body, category, rating) => {
+    handleNewRecommendation(title, body, category, rating);
+    setIsAddingNewRec(false);
+  }, [handleNewRecommendation]);
 
   const id = category + '-accordion';
 
@@ -39,6 +44,8 @@ export default function CategoryAccordion({
           recommendation={{ title: '', body: '', rating: 5, category, owner: {} }}
           isEditable={true}
           openEditing={true}
+          cancelEditing={cancelEditing}
+          submitNewRecommendation={submitNewRecommendation}
         />}
         {recommendations &&
           <Stack className='accordion-stack' spacing={5}>
