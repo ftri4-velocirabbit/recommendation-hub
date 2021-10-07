@@ -75,7 +75,7 @@ export default function LandingPageFeature() {
 
   return (
     <>
-      <Paper id='landing-container' elevation={3}>
+      <Paper id='landing-container' elevation={10}>
         <a className="prev" onClick={() => switchSlide(-1)}>&#10094;</a>
         <CarouselItem
           caption={slides[carouselPageNum - 1].caption}

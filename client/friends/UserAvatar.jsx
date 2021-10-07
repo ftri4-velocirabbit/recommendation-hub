@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 
-import { red } from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import Typography from "@mui/material//Typography";
@@ -28,7 +27,7 @@ export default function UserAvatar({
   return (
     <div className='user-avatar'>
       {/* TODO pick a random color per user */}
-      <Avatar sx={{ bgcolor: red[500] }}
+      <Avatar sx={{ bgcolor: '#F3ebe4' }}
         aria-owns={username + "-popover"}
         aria-haspopup="true"
         onClick={handleClick}
