@@ -149,9 +149,8 @@ async function prefillDatabase() {
   ];
 
   // Create users
-  for (const user of users) {
-    await createUser(user.username, user.name, user.email, lastLoginIp, lastLoginDate, passhash);
-  }
+  const userCreatePromises = users.map(user => createUser(user.username, user.name, user.email, lastLoginIp, lastLoginDate, passhash));
+  await Promise.all(userCreatePromises);
 
   // Create recommendations
 
