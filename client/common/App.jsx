@@ -16,7 +16,7 @@ import LogoutModal from './../modals/LogoutModal.jsx';
 export default function App() {
   /* STATE */
   const [useLightTheme, setUseLightTheme] = useState(false);
-  const [user, setUser] = useState({}); //null);
+  const [user, setUser] = useState(null); //null, useState({});
 
   // controlled COMPONENTS
   const [isOpenLoginModal, handleOpenLoginModal, handleCloseLoginModal] = useModal();
@@ -26,7 +26,6 @@ export default function App() {
   const [registerModalError, setRegisterModalError] = useState('');
 
   const [isLogoutModal, handleOpenLogoutModal, handleCloseLogoutModal] = useModal();
-
 
 
   /* ACTIONS */

@@ -5,6 +5,8 @@ import './Body.scss';
 import VerticalNavBar from './VerticalNavBar.jsx';
 import Feed from './../feed/Feed.jsx';
 import Settings from '../settings/Settings.jsx';
+import MyRecommendation from './../my_recommendation/MyRecommendation.jsx';
+
 import Stack from '@mui/material/Stack';
 
 export default function Body() {
@@ -16,7 +18,8 @@ export default function Body() {
 
     <Stack id='body' direction='row'>
       <VerticalNavBar />
-      <Settings />
+      {/* <Settings /> */}
+      <MyRecommendation />
     </Stack>
   );
 }

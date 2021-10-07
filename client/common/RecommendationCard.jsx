@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './FeedRecommendation.scss';
+import './RecommendationCard.scss';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -12,15 +12,19 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import EditIcon from '@mui/icons-material/Edit';
 
 function getFirstWordLetters(string) {
   return string.match(/(^\w{1}|\s\w{1})/g).map(char => char.trim().toUpperCase()).join('');
 }
 
-export default function FeedRecommendation({
+export default function RecommendationCard({
+  isEditable = false,
   recommendation: { id, title, body, rating, category, date, owner: { name, username } }
 }) {
   // TODO add modal to unfollow user when clicking on Avatar
+
+  // TODO add ability to edit recommendation
 
   // STRETCH add like button functionality
 
@@ -39,9 +43,12 @@ export default function FeedRecommendation({
         />
         <Typography variant="h6" color="text.primary" align="right">{category}</Typography>
         <CardActions disableSpacing>
-          <IconButton aria-label="add to favorites">
+          {!isEditable && <IconButton aria-label="heart this">
             <FavoriteIcon />
-          </IconButton>
+          </IconButton>}
+          {isEditable && <IconButton aria-label="edit recommendation">
+            <EditIcon />
+          </IconButton>}
         </CardActions>
       </Stack>
       <CardContent>
