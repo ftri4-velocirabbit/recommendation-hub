@@ -27,15 +27,15 @@ const theme = createTheme({
       secondary: '#716462',
     },
     error: {
-      main: '#967553',
+      main: '#985A1F',
       contrastText: '#f3ebe4',
     },
     warning: {
-      main: '#9a846d',
+      main: '#985A1F',
       contrastText: '#f1ede3',
     },
     info: {
-      main: '#9a846d',
+      main: '##904b04',
       contrastText: '#f3ebe4',
     },
     success: {
@@ -71,9 +71,11 @@ const theme = createTheme({
     },
     MuiInputBase: {
       margin: 'dense',
+      color: '#904b04'
     },
     MuiInputLabel: {
       margin: 'dense',
+      color: '#904b04'
     },
     MuiRadio: {
       size: 'small',
@@ -84,13 +86,11 @@ const theme = createTheme({
     MuiTextField: {
       margin: 'dense',
       size: 'small',
+      color: '#904b04'
     },
   },
   typography: {
     fontFamily: 'Cormorant Garamond',
-    cardHeader: {
-    fontStyle: 'italic',
-    },
     h6: {
       fontStyle: 'italic',
       },

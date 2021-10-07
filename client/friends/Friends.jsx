@@ -129,6 +129,8 @@ export default function Friends({
         onChange={onSearchValueChange}
         onKeyPress={searchOnKeyPress}
         size="small"
+        color="warning"
+        sx={{color:'warning.main'}}
       />
       {!showSearchResult && <>
         <Followers

@@ -13,7 +13,7 @@ export default function SearchResult({
       {users.map(user => (
         <Stack key={user.username}>
           <Typography>{user.name}</Typography>
-          <Button variant="outlined" onClick={() => followUser(user.name, user.username)}>Follow</Button>
+          <Button variant="contained" onClick={() => followUser(user.name, user.username)}>Follow</Button>
         </Stack>
       ))}
     </Stack>
