@@ -106,3 +106,6 @@ dist
 # Custom
 build
 secrets
+
+# DS_STORE
+.DS_STORE
