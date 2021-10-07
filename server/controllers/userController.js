@@ -12,8 +12,8 @@ async function createUser(req, res, next) {
 	try {
 		const { username, password, name, email } = req.body;
 		const bcryptHash = await bcrypt.hash(password, SALT_WORK_FACTOR);
-		const newUser = await userModel.createUser(username, name, email, req.ip, new Date(), bcryptHash);
-		res.locals.newUser = newUser;
+		const user = await userModel.createUser(username, name, email, req.ip, new Date(), bcryptHash);
+		res.locals.user = user;
 		return next();
 	} catch (error) {
 		return next(error);
@@ -43,7 +43,7 @@ async function getUser(req, res, next) {
 			userObj.followers.push(followerUser);
 		}
 
-		res.locals.user = userObj;
+		res.locals.foundUser = userObj;
 		return next();
 	} catch (error) {
 		return next(error);
@@ -51,30 +51,26 @@ async function getUser(req, res, next) {
 }
 
 /**
- * @returns user object in res.locals or error
+ * @returns user object and checks if still logged in or session is expired in res.locals or error
  */
 async function verifyUser(req, res, next) {
 	try {
+		// 1 - check if given password ties to passhash using bcrypt compare
 		const { username, password } = req.body;
 		const user = await userModel.readUser(username);
-		console.log('user', user);
 		const match = await bcrypt.compare(password, user.passhash);
 		if (!match) return next();
 
-		// TODO update last ip and last login date
+		// 2 - update last ip and last login date in users table
+		await userModel.updateUser(user.username, user.name, user.email, req.ip, new Date(), user.passhash);
 
+		// 3 - check if session is expired or is still logged in
 		const currentSession = await sessionModel.readSession(req.cookies.sid);
 		const now = new Date();
-
-		// checking if current session is expired
-		if (currentSession.expires > now) {
-			res.locals.isLoggedIn = true;
-		} else {
-			res.locals.expiredSession = true;
-		}
+		if (currentSession && currentSession.expires < now) res.locals.isLoggedIn = true;
+		else res.locals.isLoggedIn = false;
 
 		res.locals.user = user;
-		// console.log('reslocals', res.locals);
 		return next();
 	} catch (error) {
 		return next(error);

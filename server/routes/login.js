@@ -8,11 +8,12 @@ const router = Router();
 
 router.post('/',
 	userController.verifyUser,
+	sessionController.updateSession,
 	sessionController.deleteSession,
 	sessionController.createSession,
 	cookieController.createCookie,
 	(req, res) => {
-		res.status(200).json(res.locals.sid);
+		res.status(200).json(res.locals.user);
 	}
 );
 
