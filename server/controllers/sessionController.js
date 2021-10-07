@@ -29,7 +29,7 @@ async function updateSession(req, res, next) {
 	// try to update existing session before creating a new one
 	// TODO rethink how to handle this with fewer queries
 	let session = await sessionModel.findSession(res.locals.user.username);
-	session = await sessionModel.updateSession(session.id, expires);
+	if (session) session = await sessionModel.updateSession(session.id, expires);
 	if (!session) session = await sessionModel.createSession(res.locals.user.username, expires);
 
 	res.locals.session = session;

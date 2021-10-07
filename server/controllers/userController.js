@@ -1,11 +1,15 @@
 const bcrypt = require('bcrypt');
 
+// TODO refactor to using userController namespace
 const {
 	createUser: umCreateUser,
 	readUser,
 	getPeopleThatFollowUser,
 	getPeopleUserFollows,
 	updateUser: umUpdateUser,
+	searchUsers: umSearchUsers,
+	followUser: umFollowUser,
+	unfollowUser: umUnfollowUser,
 } = require('../models/userModel');
 const { isValidName, isValidEmail, isValidPassword, isValidUsername } = require('./../../shared/validation');
 
@@ -66,14 +70,13 @@ async function getUser(req, res, next) {
 	const followedUsers = await getPeopleUserFollows(user.username);
 	const followers = await getPeopleThatFollowUser(user.username);
 
-
 	res.locals.user = {
 		name: user.name,
 		username: user.username,
 		email: user.email,
 	};
-	res.followedUsers = followedUsers;
-	res.followers = followers;
+	res.locals.followedUsers = followedUsers;
+	res.locals.followers = followers;
 
 	return next();
 }
@@ -157,13 +160,12 @@ async function deleteUser(req, res, next) {
  * Middleware: Search for users based on parameter `term`. Array of front-end User, may be empty, will be set in `res.locals.users`.
  */
 async function searchUsers(req, res, next) {
-	// confirm user has passes access check
-	if (!res.locals.user) return next();
+	if (!res.locals.session) return next();
 	if (!req.params.term) return next(new Error('Middleware reached without term parameter.'));
 
 	req.params.term = decodeURIComponent(req.params.term);
 
-	res.locals.users = (await searchUsers(req.params.term))
+	res.locals.users = (await umSearchUsers(req.params.term))
 		.map(user => ({
 			name: user.name,
 			username: user.username,
@@ -200,7 +202,9 @@ async function followUser(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	res.locals.dbStatus = await followUser(res.locals.user.username, req.params.username);
+	req.params.username = decodeURIComponent(req.params.username);
+
+	res.locals.dbStatus = await umFollowUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
 		res.locals.followedUsers = await getPeopleUserFollows(res.locals.user.username);
@@ -218,10 +222,12 @@ async function unfollowUser(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	res.locals.dbStatus = await unfollowUser(res.locals.user.username, req.params.username);
+	req.params.username = decodeURIComponent(req.params.username);
+
+	res.locals.dbStatus = await umUnfollowUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
-		res.locals.followedUsers = await getPeopleThatFollowUser(res.locals.user.username);
+		res.locals.followedUsers = await getPeopleUserFollows(res.locals.user.username);
 	}
 
 	return next();
