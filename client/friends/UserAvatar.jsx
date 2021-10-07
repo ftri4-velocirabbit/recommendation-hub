@@ -45,7 +45,7 @@ export default function UserAvatar({
         onClose={handleClose}
       >
         <Typography sx={{ p: 1 }} >{name}</Typography>
-        {canUnfollow && <Button variant="outlined" onClick={onUnfollowClick}>Unfollow</Button>}
+        {canUnfollow && <Button  size="large" variant="contained" onClick={onUnfollowClick}>Unfollow</Button>}
       </Popover>
     </div>
   );
