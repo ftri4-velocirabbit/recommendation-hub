@@ -13,36 +13,28 @@ import Stack from '@mui/material/Stack';
 
 import RecommendationCard from './../common/RecommendationCard.jsx';
 
+export default function CategoryAccordion({ category, recommendations }) {
+	const id = category + '-accordion';
 
-export default function CategoryAccordion({
-  category,
-  recommendations,
-}) {
-
-
-  const id = category + '-accordion';
-
-  return (
-    <Accordion>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls={id}
-        id={id}
-      >
-        <Typography variant='h6' ml={1}>{category}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        <Button>Add <AddIcon /></Button>
-        {recommendations &&
-          <Stack className='accordion-stack' spacing={5}>
-            {recommendations.map(rec => <RecommendationCard
-              key={rec.id}
-              recommendation={rec}
-              isEditable={true}
-            />)}
-          </Stack>
-        }
-      </AccordionDetails>
-    </Accordion>
-  );
+	return (
+		<Accordion>
+			<AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls={id} id={id}>
+				<Typography variant='h6' ml={1}>
+					{category}
+				</Typography>
+			</AccordionSummary>
+			<AccordionDetails>
+				<Button>
+					Add <AddIcon />
+				</Button>
+				{recommendations && (
+					<Stack className='accordion-stack' spacing={5}>
+						{recommendations.map((rec) => (
+							<RecommendationCard key={rec.id} recommendation={rec} isEditable={true} />
+						))}
+					</Stack>
+				)}
+			</AccordionDetails>
+		</Accordion>
+	);
 }
