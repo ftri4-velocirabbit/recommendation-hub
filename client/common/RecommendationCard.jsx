@@ -32,6 +32,7 @@ export default function RecommendationCard({
   cancelEditing,
   submitNewRecommendation,
   submitUpdateRecommendation,
+  submitDeleteRecommendation,
 }) {
   // STRETCH add like button functionality
   // TODO add modal to unfollow user when clicking on Avatar
@@ -59,6 +60,11 @@ export default function RecommendationCard({
     setIsEditing(false);
     return submitUpdateRecommendation(id, titleFieldValue, bodyFieldValue, categoryFieldValue, rating);
   }, [bodyFieldValue, categoryFieldValue, id, openEditing, rating, submitNewRecommendation, submitUpdateRecommendation, titleFieldValue]);
+
+  const handleDelete = useCallback(() => {
+    setIsEditing(false);
+    submitDeleteRecommendation(id);
+  }, [id, submitDeleteRecommendation]);
 
   const handleCancel = useCallback(() => {
     if (openEditing) return cancelEditing();
@@ -123,27 +129,32 @@ export default function RecommendationCard({
 
         {isEditable && isEditing && <div>
           <form onSubmit={handleSaveSubmit}>
-            <InputLabel htmlFor="my-title">Title</InputLabel>
-            <TextField
-              id="my-title"
-              variant="outlined"
-              aria-describedby="my-title"
-              defaultValue={titleFieldValue}
-              onChange={onTitleFieldValue}
-            />
-            <InputLabel htmlFor="my-recommendation">Recommendation</InputLabel>
-            <TextField
-              id="my-recommendation"
-              fullWidth={true}
-              variant="outlined"
-              multiline
-              maxRows={4}
-              aria-describedby="my-recommendation"
-              defaultValue={bodyFieldValue}
-              onChange={onBodyFieldValue}
-            />
-            <Button type="submit" variant="outlined" onClick={handleSaveSubmit}>Save</Button>
-            <Button variant="outlined" color="error" onClick={handleCancel}>Cancel</Button>
+            <Stack spacing={2}>
+              <TextField
+                id="my-title"
+                variant="outlined"
+                label="Title"
+                aria-describedby="my-title"
+                defaultValue={titleFieldValue}
+                onChange={onTitleFieldValue}
+              />
+              <TextField
+                id="my-recommendation"
+                fullWidth={true}
+                variant="outlined"
+                label="Recommendation"
+                multiline
+                maxRows={4}
+                aria-describedby="my-recommendation"
+                defaultValue={bodyFieldValue}
+                onChange={onBodyFieldValue}
+              />
+            </Stack>
+            <Stack className="recommendation-buttons-nav" direction="row" mt={2}>
+              <Button type="submit" variant="contained" size='small' onClick={handleSaveSubmit}>Save</Button>
+              <Button variant="contained" color="error" size='small' onClick={handleCancel}>Cancel</Button>
+              {!openEditing && <Button variant="contained" color="error" size='small' onClick={handleDelete}>Delete</Button>}
+            </Stack>
           </form>
         </div>}
       </CardContent>

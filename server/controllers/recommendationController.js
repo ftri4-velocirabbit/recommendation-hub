@@ -123,8 +123,10 @@ async function updateRecommendation(req, res, next) {
 }
 
 async function deleteRecommendation(req, res, next) {
-  if (!res.locals.user) return next();
+  if (!res.locals.session) return next();
   if (!req.params.id) return next(new Error('Middleware reached without id parameter.'));
+
+  req.params.id = decodeURIComponent(req.params.id);
 
   res.locals.dbStatus = await dbDeleteRecommendation(req.params.id);
   return next();

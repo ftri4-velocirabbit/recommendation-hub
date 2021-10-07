@@ -19,6 +19,7 @@ export default function CategoryAccordion({
   recommendations,
   handleNewRecommendation,
   submitUpdateRecommendation,
+  submitDeleteRecommendation,
 }) {
   const [isAddingNewRec, setIsAddingNewRec] = useState(false);
 
@@ -41,24 +42,24 @@ export default function CategoryAccordion({
       </AccordionSummary>
       <AccordionDetails>
         {!isAddingNewRec && <Button onClick={() => setIsAddingNewRec(true)}>Add <AddIcon /></Button>}
-        {isAddingNewRec && <RecommendationCard
-          recommendation={{ title: '', body: '', rating: 5, category, owner: {} }}
-          isEditable={true}
-          openEditing={true}
-          cancelEditing={cancelEditing}
-          submitNewRecommendation={submitNewRecommendation}
-        />}
-        {recommendations &&
-          <Stack className='accordion-stack' spacing={5}>
-            {recommendations.map(rec => <RecommendationCard
-              key={rec.id}
-              recommendation={rec}
-              isEditable={true}
-              cancelEditing={cancelEditing}
-              submitUpdateRecommendation={submitUpdateRecommendation}
-            />)}
-          </Stack>
-        }
+        <Stack className='accordion-stack' spacing={5}>
+          {isAddingNewRec && <RecommendationCard
+            recommendation={{ title: '', body: '', rating: 5, category, owner: {} }}
+            isEditable={true}
+            openEditing={true}
+            cancelEditing={cancelEditing}
+            submitNewRecommendation={submitNewRecommendation}
+          />}
+          {recommendations && recommendations.map(rec => <RecommendationCard
+            key={rec.id}
+            recommendation={rec}
+            isEditable={true}
+            cancelEditing={cancelEditing}
+            submitUpdateRecommendation={submitUpdateRecommendation}
+            submitDeleteRecommendation={submitDeleteRecommendation}
+          />)
+          }
+        </Stack>
       </AccordionDetails>
     </Accordion>
   );
