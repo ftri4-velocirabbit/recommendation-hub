@@ -69,6 +69,7 @@ module.exports = {
     ]
   },
   devServer: {
+    port: 9191,
     publicPath: '/',
     proxy: {
       '/login': { target: 'http://localhost:3000' },

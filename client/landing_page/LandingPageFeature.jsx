@@ -59,8 +59,6 @@ export default function LandingPageFeature() {
 
     /* change slides */
     const switchSlide = useCallback((n) => {
-      //console.log('clicked', n);
-      // setCarouselPageNum(num => num + n);
       setCarouselPageNum(num => {
         num += n;
         if (num > slides.length) num -= 1;
@@ -78,7 +76,7 @@ export default function LandingPageFeature() {
             imageUrl={slides[carouselPageNum - 1].image}
           />
           <a className="next" onClick={() => switchSlide(1)}>&#10095;</a>
-          <Pagination count={slides.length} variant="outlined" page={carouselPageNum} onChange={handleChange}/>
+          <Pagination count={slides.length} variant="outlined" page={carouselPageNum} hidePrevButton hideNextButton onChange={handleChange}/>
         </Paper>
       </>
     );

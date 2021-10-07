@@ -6,6 +6,7 @@ import VerticalNavBar from './VerticalNavBar.jsx';
 import Feed from './../feed/Feed.jsx';
 import Settings from '../settings/Settings.jsx';
 import MyRecommendation from './../my_recommendation/MyRecommendation.jsx';
+import Friends from './../friends/Friends.jsx';
 
 import Stack from '@mui/material/Stack';
 
