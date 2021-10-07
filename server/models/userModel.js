@@ -118,30 +118,30 @@ async function followUser(username, followed_username) {
 }
 
 /**
- * @returns Array of objects that contain followed usernames or empty array if either username does not exist or username does not follow anyone.
+ * @returns Array of front-end schema UserListItem of people that follow the user.
  */
-async function getFollowed(username) {
-	const result = await pool.query(
-		`
-    SELECT * FROM user_follows
-    WHERE username = $1;
-  `,
-		[username]
-	);
+async function getPeopleThatFollowUser(username) {
+	const result = await pool.query(`
+    SELECT uf.username AS username, u.name AS name
+		FROM user_follows uf
+		INNER JOIN users u ON u.username = uf.username
+    WHERE uf.followed_username = $1;
+  `, [username]);
+
 	return result.rows;
 }
 
 /**
- * @returns Array of objects that contain followers under username or empty array if either username does not exist or noone follows him/her.
+ * @returns Array of front-end schema UserListItem of people the user follows.
  */
-async function getFollowers(followed_username) {
-	const result = await pool.query(
-		`
-    SELECT * FROM user_follows
-    WHERE followed_username = $1;
-  `,
-		[followed_username]
-	);
+async function getPeopleUserFollows(username) {
+	const result = await pool.query(`
+    SELECT uf.followed_username AS username, u.name AS name
+		FROM user_follows uf
+		INNER JOIN users u ON u.username = uf.followed_username
+    WHERE uf.username = $1;
+  `, [username]);
+
 	return result.rows;
 }
 
@@ -171,8 +171,8 @@ module.exports = {
 	updateUser,
 	deleteUser,
 	followUser,
-	getFollowed,
-	getFollowers,
+	getPeopleThatFollowUser,
+	getPeopleUserFollows,
 	unfollowUser,
 	searchUsers
 };
