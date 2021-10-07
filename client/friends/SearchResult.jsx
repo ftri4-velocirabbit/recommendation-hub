@@ -9,11 +9,15 @@ export default function SearchResult({
   followUser,
 }) {
   return (
-    <Stack>
+    <Stack spacing={2} mt={3}>
       {users.map(user => (
-        <Stack key={user.username}>
-          <Typography>{user.name}</Typography>
-          <Button variant="outlined" onClick={() => followUser(user.name, user.username)}>Follow</Button>
+        <Stack key={user.username} direction='row'>
+          <Typography mr={2}>{user.name}</Typography>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => followUser(user.name, user.username)}
+          >Follow</Button>
         </Stack>
       ))}
     </Stack>
