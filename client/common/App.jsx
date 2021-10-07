@@ -80,9 +80,24 @@ export default function App() {
     handleCloseRegisterModal();
   }, [handleCloseRegisterModal]);
 
-  const handleLogoutRequest = useCallback(() => {
-    // TODO implement AJAX login handshake
-  }, []);
+  const handleLogoutRequest = useCallback(async () => {
+    const response = await fetch('/logout', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const body = await response.json();
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /api/user with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setUser(null);
+    handleCloseLogoutModal();
+  }, [handleCloseLogoutModal]);
 
   /* Render */
   const theme = useTheme();

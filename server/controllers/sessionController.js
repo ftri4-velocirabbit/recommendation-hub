@@ -3,68 +3,66 @@ const sessionModel = require('../models/sessionModel');
 const SESSION_TIMEOUT_DAYS = 7;
 
 /**
- * Middleware: Create a session in the database. Sets `res.locals.sid` and `res.locals.expires` if successful.
+ * Middleware: Create a session in the database. Sets `res.locals.session` with database session object if successful.
  */
 async function createSession(req, res, next) {
 	if (!res.locals.user || res.locals.isLoggedIn) return next();
 
-	try {
-		const expires = new Date();
-		expires.setDate(expires.getDate() + SESSION_TIMEOUT_DAYS);
+	const expires = new Date();
+	expires.setDate(expires.getDate() + SESSION_TIMEOUT_DAYS);
 
-		const session = await sessionModel.createSession(res.locals.user.username, expires);
+	const session = await sessionModel.createSession(res.locals.user.username, expires);
 
-		res.locals.sid = session.id;
-		res.locals.expires = expires;
-	} catch (error) {
-		return next(error);
-	}
-
+	res.locals.session = session;
 	return next();
 }
 
 /**
- * Middleware: Update or create a session in the database. Sets `res.locals.sid` and `res.locals.expires` if successful.
+ * Middleware: Update or create a session in the database. Sets `res.locals.session` with database session object if successful.
  */
 async function updateSession(req, res, next) {
 	if (!res.locals.user || res.locals.isLoggedIn) return next();
 
-	try {
-		const expires = new Date();
-		expires.setDate(expires.getDate() + SESSION_TIMEOUT_DAYS);
+	const expires = new Date();
+	expires.setDate(expires.getDate() + SESSION_TIMEOUT_DAYS);
 
-		// try to update existing session before creating a new one
-		// TODO rethink how to handle this with fewer queries
-		let session = await sessionModel.findSession(res.locals.user.username);
-		session = await sessionModel.updateSession(session.id, expires);
-		if (!session) session = await sessionModel.createSession(res.locals.user.username, expires);
+	// try to update existing session before creating a new one
+	// TODO rethink how to handle this with fewer queries
+	let session = await sessionModel.findSession(res.locals.user.username);
+	session = await sessionModel.updateSession(session.id, expires);
+	if (!session) session = await sessionModel.createSession(res.locals.user.username, expires);
 
-		res.locals.sid = session.id;
-		res.locals.expires = expires;
-	} catch (error) {
-		return next(error);
-	}
+	res.locals.session = session;
+	return next();
+}
+
+/**
+ * Middleware: Sets `res.locals.session` with database session object if session was found for user.
+ */
+async function findSession(req, res, next) {
+	if (!res.locals.user) return next();
+
+	let session = await sessionModel.findSession(res.locals.user.username);
+	if (session) res.locals.session = session;
 
 	return next();
 }
 
 /**
- * @returns Boolean whether the session was successfully deleted.
+ * Middleware: Sets `res.locals.deletedSession` to boolean indicating result of operation.
  */
 async function deleteSession(req, res, next) {
-	if (res.locals.isLoggedIn) return next();
-	try {
-		const result = await sessionModel.deleteSession(req.cookies.sid);
-		res.clearCookie('sid');
-		res.locals.deletedSession = result;
-		return next();
-	} catch (error) {
-		return next(error);
-	}
+	if (!res.locals.session || !res.locals.sid) return next();
+
+	const sid = res.locals?.session.id || res.locals.sid;
+	res.locals.deletedSession = await sessionModel.deleteSession(sid);
+
+	return next();
 }
 
 module.exports = {
 	createSession,
 	updateSession,
 	deleteSession,
+	findSession,
 };
