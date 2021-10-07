@@ -72,6 +72,53 @@ describe('Test user model interface', () => {
     expect(result.rows).toHaveLength(1);
   });
 
+  test('Search for users', async () => {
+    const username = 'miguel';
+    const name = 'Miguel Hernandez';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    const username2 = 'adam';
+    const name2 = 'Adam Smith';
+    const email2 = 'adam@outlook.com';
+
+    const username3 = 'Maria';
+    const name3 = 'Maria Smith';
+    const email3 = 'maria@google.com';
+
+    await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username2, name2, email2, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username3, name3, email3, last_login_ip, last_login_date, passhash);
+
+    // search for users with term "smith"
+    let users = await userModel.searchUsers('smith');
+    expect(users).toHaveLength(2);
+    expect(users).toMatchObject([
+      //{ username, name, email, passhash, last_login_ip, last_login_date },
+      { username: username2, name: name2, email: email2, passhash, last_login_ip, last_login_date },
+      { username: username3, name: name3, email: email3, passhash, last_login_ip, last_login_date },
+    ]);
+
+    users = await userModel.searchUsers('outlook');
+    expect(users).toHaveLength(2);
+    expect(users).toMatchObject([
+      { username, name, email, passhash, last_login_ip, last_login_date },
+      { username: username2, name: name2, email: email2, passhash, last_login_ip, last_login_date },
+    ]);
+
+    users = await userModel.searchUsers('guel');
+    expect(users).toHaveLength(1);
+    expect(users).toMatchObject([
+      { username, name, email, passhash, last_login_ip, last_login_date },
+    ]);
+
+    // database only has one user object
+    const result = await pool.query(`SELECT * FROM users;`, []);
+    expect(result.rows).toHaveLength(3);
+  });
+
   test('Update a user', async () => {
     const username = 'miguel';
     const name = 'Miguel Hernandez';
@@ -222,6 +269,70 @@ describe('Test user model interface', () => {
     // database only has no user_follows object
     result = await pool.query(`SELECT * FROM user_follows;`, []);
     expect(result.rows).toHaveLength(0);
+  });
+
+  test('Test getting a list of people you follow', async () => {
+    const username = 'miguel';
+    const username2 = 'adam';
+    const username3 = 'mary';
+    const name = 'Miguel Hernandez';
+    const name2 = 'Adam Smith';
+    const name3 = 'Mary Smith';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username2, name2, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username3, name3, email, last_login_ip, last_login_date, passhash);
+
+    await userModel.followUser(username, username2);
+
+    let result = await userModel.getPeopleUserFollows(username);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ username: username2, name: name2 });
+
+    await userModel.followUser(username, username3);
+
+    result = await userModel.getPeopleUserFollows(username);
+    expect(result).toHaveLength(2);
+    expect(result).toMatchObject([
+      { username: username2, name: name2 },
+      { username: username3, name: name3 },
+    ]);
+  });
+
+  test('Test getting a list of people that follow the user', async () => {
+    const username = 'miguel';
+    const username2 = 'adam';
+    const username3 = 'mary';
+    const name = 'Miguel Hernandez';
+    const name2 = 'Adam Smith';
+    const name3 = 'Mary Smith';
+    const email = 'miguelh72@outlook.com';
+    const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+    const last_login_ip = '127.0.0.1';
+    const last_login_date = new Date();
+
+    await userModel.createUser(username, name, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username2, name2, email, last_login_ip, last_login_date, passhash);
+    await userModel.createUser(username3, name3, email, last_login_ip, last_login_date, passhash);
+
+    await userModel.followUser(username2, username);
+
+    let result = await userModel.getPeopleThatFollowUser(username);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ username: username2, name: name2 });
+
+    await userModel.followUser(username3, username);
+
+    result = await userModel.getPeopleThatFollowUser(username);
+    expect(result).toHaveLength(2);
+    expect(result).toMatchObject([
+      { username: username2, name: name2 },
+      { username: username3, name: name3 },
+    ]);
   });
 
 });
