@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 import './App.scss';
-import useModal from './../hooks/useModal';
 
-import { useTheme } from '@mui/material/styles';
+import useModal from './../hooks/useModal';
 import NavBar from './NavBar.jsx';
-// import VerticalNavBar from './VerticalNavBar.jsx';
 import Body from './Body.jsx';
 import LandingPage from './LandingPage.jsx';
 import Footer from './Footer.jsx';
@@ -29,7 +28,7 @@ export default function App() {
 
 
   /* ACTIONS */
-  const handleLoginRequest = useCallback(() => {
+  const handleLoginRequest = useCallback((username, password) => {
     // TODO implement AJAX login handshake
   }, []);
 
@@ -44,6 +43,7 @@ export default function App() {
   /* Render */
   const theme = useTheme();
   theme.palette.mode = useLightTheme ? 'light' : 'dark';
+  // STRETCH add light/dark mode button
 
   return (
     <div id='app'>

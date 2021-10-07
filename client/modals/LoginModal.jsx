@@ -21,7 +21,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useTextField from '../hooks/useTextField';
 import usePasswordTextField from '../hooks/usePasswordTextField';
 
-const { isValidEmail } = require('./../../shared/validation');
+const { isValidUsername } = require('./../../shared/validation');
 
 export default function LoginModal({
   isOpen,
@@ -31,7 +31,7 @@ export default function LoginModal({
 }) {
   /* STATE */
 
-  const [email, onEmailChange] = useTextField('');
+  const [username, onUsernameChange] = useTextField('');
   const [password, showPassword, onPasswordChange, handleClickShowPassword] = usePasswordTextField('');
 
   const theme = useTheme();
@@ -41,13 +41,11 @@ export default function LoginModal({
   /* ACTION */
 
   const handleSubmission = useCallback(() => {
-    if (isValidEmail(email)) return handleLoginRequest(email, password);
-  }, [handleLoginRequest, email, password]);
+    return handleLoginRequest(username, password);
+  }, [username, handleLoginRequest, password]);
 
 
   /* RENDER */
-
-  const isEmailValid = email.length === 0 || isValidEmail(email);
 
   return (
     <Dialog
@@ -77,18 +75,15 @@ export default function LoginModal({
           spacing={2}
         >
           <FormControl
-            error={!isEmailValid}
             variant="standard"
           >
-            <InputLabel htmlFor="email-field">Email</InputLabel>
+            <InputLabel htmlFor="username-field">Username</InputLabel>
             <Input
               autoFocus
-              id="email-field"
-              aria-describedby="email-error-text"
-              value={email}
-              onChange={onEmailChange}
+              id="username-field"
+              value={username}
+              onChange={onUsernameChange}
             />
-            {!isEmailValid && <FormHelperText id="email-error-text">Invalid email</FormHelperText>}
           </FormControl>
 
           <FormControl variant="standard">

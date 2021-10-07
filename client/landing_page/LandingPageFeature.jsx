@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+
+import './LandingPageFeature.scss';
+
 import Paper from '@mui/material/Paper';
-import CarouselItem from './CarouselItem.jsx';
-import '../common/LandingPage.scss';
-import { useCallback } from 'react';
 import Pagination from '@mui/material/Pagination';
+
+import CarouselItem from './CarouselItem.jsx';
 
 const slides = [
   {
@@ -34,52 +36,50 @@ const slides = [
 ];
 
 export default function LandingPageFeature() {
+  let [carouselPageNum, setCarouselPageNum] = useState(1);
 
-
-    let [carouselPageNum, setCarouselPageNum] = useState(1);
-
-    /* changes slides at set time interval */
-    useEffect(() => {
-      setInterval(() => {
-        // switch logic
-        // iterate through slides array
-          // set each element of array as new state
-        // change the state of LandingPageFeature
-        setCarouselPageNum(num => {
-          num++;
-          if (num > slides.length) num = 1;
-          return num;
-        });
-      }, 5000);
-    }, []);
-
-    const handleChange = (event, pageNum) => {
-      setCarouselPageNum(pageNum);
-    };
-
-    /* change slides */
-    const switchSlide = useCallback((n) => {
-      //console.log('clicked', n);
-      // setCarouselPageNum(num => num + n);
+  /* changes slides at set time interval */
+  useEffect(() => {
+    setInterval(() => {
+      // switch logic
+      // iterate through slides array
+      // set each element of array as new state
+      // change the state of LandingPageFeature
       setCarouselPageNum(num => {
-        num += n;
-        if (num > slides.length) num -= 1;
-        if (num < 0) num = 0;
+        num++;
+        if (num > slides.length) num = 1;
         return num;
       });
-    }, []);
+    }, 5000);
+  }, []);
 
-    return (
-      <>
-        <Paper id='landing-container' elevation={3}>
+  const handleChange = (event, pageNum) => {
+    setCarouselPageNum(pageNum);
+  };
+
+  /* change slides */
+  const switchSlide = useCallback((n) => {
+    //console.log('clicked', n);
+    // setCarouselPageNum(num => num + n);
+    setCarouselPageNum(num => {
+      num += n;
+      if (num > slides.length) num -= 1;
+      if (num < 0) num = 0;
+      return num;
+    });
+  }, []);
+
+  return (
+    <>
+      <Paper id='landing-container' elevation={3}>
         <a className="prev" onClick={() => switchSlide(-1)}>&#10094;</a>
-          <CarouselItem 
-            caption={slides[carouselPageNum - 1].caption}
-            imageUrl={slides[carouselPageNum - 1].image}
-          />
-          <a className="next" onClick={() => switchSlide(1)}>&#10095;</a>
-          <Pagination count={slides.length} variant="outlined" page={carouselPageNum} onChange={handleChange}/>
-        </Paper>
-      </>
-    );
+        <CarouselItem
+          caption={slides[carouselPageNum - 1].caption}
+          imageUrl={slides[carouselPageNum - 1].image}
+        />
+        <a className="next" onClick={() => switchSlide(1)}>&#10095;</a>
+        <Pagination count={slides.length} variant="outlined" page={carouselPageNum} onChange={handleChange} />
+      </Paper>
+    </>
+  );
 }
