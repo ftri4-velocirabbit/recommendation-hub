@@ -6,7 +6,7 @@ const { getFeed } = require('./../controllers/recommendationController');
 const router = Router();
 
 router.get('/',
-  verifyUser,
+  // todo verifyUser,
   getFeed,
   (req, res, next) => {
     if (!res.locals.user) return res.status(401).json({

@@ -1,32 +1,40 @@
 const { Router } = require('express');
 
-const userController = require('../controllers/userController');
+const { createUser, getUser, updateUser, deleteUser } = require('../controllers/userController');
+const { createSession } = require('./../controllers/sessionController');
+const { createCookie } = require('./../controllers/cookieController');
 
 const router = Router();
 
 router.get('/',
-  userController.getUser,
+  getUser,
   (req, res) => {
-    res.status(200).json(res.locals.user);
+    res.status(200).json({ user: res.locals.foundUser });
   }
 );
 
 router.post('/',
-  userController.createUser,
-  (req, res) => {
-    res.status(200).json(res.locals.newUser);
+  createUser,
+  createSession,
+  createCookie,
+  (req, res, next) => {
+    if (res.locals.error) return res.status(401).json({ error: res.locals.error });
+    if (!res.locals.user) return next(new Error('Failed to create user in database.'));
+    if (!res.locals.sid) return next(new Error('User created, but session was not set.'));
+
+    return res.json({ user: res.locals.user });
   }
 );
 
 router.patch('/:username',
-  userController.updateUser,
+  updateUser,
   (req, res) => {
     res.status(200).json(res.locals.user);
   }
 );
 
 router.delete('/:username',
-  userController.deleteUser,
+  deleteUser,
   (req, res) => {
     if (res.locals.deletedSession) {
       res.status(401).json({ error: 'your session has expired' });

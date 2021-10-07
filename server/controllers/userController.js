@@ -2,22 +2,49 @@ const bcrypt = require('bcrypt');
 
 const sessionModel = require('../models/sessionModel');
 const userModel = require('../models/userModel');
+const { isValidName, isValidEmail, isValidPassword, isValidUsername } = require('./../../shared/validation');
 
 const SALT_WORK_FACTOR = 10;
 
 /**
- * @returns user object in res.locals or error
+ * Middleware: Create a user in the database. If successful, `res.locals.user` will be set to front-end User schema. If registration failed, `res.locals.error`
+ * will contain client error message to be used with status 401 response.
  */
 async function createUser(req, res, next) {
 	try {
-		const { username, password, name, email } = req.body;
-		const bcryptHash = await bcrypt.hash(password, SALT_WORK_FACTOR);
-		const user = await userModel.createUser(username, name, email, req.ip, new Date(), bcryptHash);
-		res.locals.user = user;
-		return next();
+		const { name, username, password, email } = req.body;
+
+		if (!isValidName(name)) {
+			res.locals.error = 'Invalid Name: PLease omit numbers and special characters';
+		} else if (!isValidUsername(username)) {
+			res.locals.error = 'Username may only be word and digit characters without spaces.';
+		} else if (!isValidPassword(password)) {
+			res.locals.error = 'Password must include upper-case, lower-case, number digit, and be at least 6 characters long.';
+		} else if (!isValidEmail(email)) {
+			res.locals.error = 'Invalid email.';
+		}
+
+		if (res.locals.error) return next();
+
+		const ip = req.headers['x-forwarded-for'] || req.ip;
+		const passhash = await bcrypt.hash(password, SALT_WORK_FACTOR);
+
+		const user = await userModel.createUser(username, name, email, ip, new Date(), passhash);
+		if (!user) {
+			res.locals.error = 'Username already exists.';
+			return next();
+		}
+
+		res.locals.user = {
+			name: user.name,
+			username: user.username,
+			email: user.email,
+		};
 	} catch (error) {
 		return next(error);
 	}
+
+	return next();
 }
 
 /**
@@ -51,24 +78,35 @@ async function getUser(req, res, next) {
 }
 
 /**
- * @returns user object and checks if still logged in or session is expired in res.locals or error
+ * Middleware: Verifies a user login. If successful, `res.locals.user` will be set to the user database schema. If login failed, `res.locals.error`
+ * will contain client error message to be used with status 401 response.
  */
-async function verifyUser(req, res, next) {
+async function verifyUserLogin(req, res, next) {
 	try {
-		// 1 - check if given password ties to passhash using bcrypt compare
 		const { username, password } = req.body;
+
+		if (!isValidUsername(username) || !isValidPassword(password)) {
+			// login failed due to invalid format
+			res.locals.error = 'Incorrect credentials.';
+			return next();
+		}
+
 		const user = await userModel.readUser(username);
+		if (!user) {
+			res.locals.error = 'Username does not exist.';
+			return next();
+		}
+
+		// check password
 		const match = await bcrypt.compare(password, user.passhash);
-		if (!match) return next();
+		if (!match) {
+			res.locals.error = 'Incorrect password';
+			return next();
+		}
 
-		// 2 - update last ip and last login date in users table
-		await userModel.updateUser(user.username, user.name, user.email, req.ip, new Date(), user.passhash);
-
-		// 3 - check if session is expired or is still logged in
-		const currentSession = await sessionModel.readSession(req.cookies.sid);
-		const now = new Date();
-		if (currentSession && currentSession.expires < now) res.locals.isLoggedIn = true;
-		else res.locals.isLoggedIn = false;
+		// update last ip and last login date in users table
+		const ip = req.headers['x-forwarded-for'] || req.ip;
+		await userModel.updateUser(user.username, user.name, user.email, ip, new Date());
 
 		res.locals.user = user;
 		return next();
@@ -190,7 +228,7 @@ async function unfollowUser(req, res, next) {
 module.exports = {
 	createUser,
 	getUser,
-	verifyUser,
+	verifyUserLogin,
 	updateUser,
 	deleteUser,
 	searchUsers,

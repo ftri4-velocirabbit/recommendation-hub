@@ -1,50 +1,51 @@
 const sessionModel = require('../models/sessionModel');
 
+const SESSION_TIMEOUT_DAYS = 7;
+
 /**
- * @returns session id or error
+ * Middleware: Create a session in the database. Sets `res.locals.sid` and `res.locals.expires` if successful.
  */
 async function createSession(req, res, next) {
-	if (!res.locals.user) return next();
-	if (res.locals.isLoggedIn) return next();
+	if (!res.locals.user || res.locals.isLoggedIn) return next();
+
 	try {
-		const { username } = res.locals.user;
+		const expires = new Date();
+		expires.setDate(expires.getDate() + SESSION_TIMEOUT_DAYS);
 
-		// getting time 7 days from now for session expiration
-		let date = new Date();
-		let time = date.getTime();
-		let expireTime = time + 1000 * 86400 * 7; //1000ms * 86400s/day * 7 days
-		date.setTime(expireTime);
+		const session = await sessionModel.createSession(res.locals.user.username, expires);
 
-		const newSession = await sessionModel.createSession(username, date);
-
-		// TODO handle newSession is undefined with error message
-
-		res.locals.sid = newSession.id;
-		return next();
+		res.locals.sid = session.id;
+		res.locals.expires = expires;
 	} catch (error) {
 		return next(error);
 	}
+
+	return next();
 }
 
 /**
- * @returns session id or error
+ * Middleware: Update or create a session in the database. Sets `res.locals.sid` and `res.locals.expires` if successful.
  */
 async function updateSession(req, res, next) {
-	if (!res.locals.isLoggedIn) return next();
+	if (!res.locals.user || res.locals.isLoggedIn) return next();
+
 	try {
-		// getting time 7 days from now for session expiration
-		let date = new Date();
-		let time = date.getTime();
-		let expireTime = time + 1000 * 86400 * 7; //1000ms * 86400s/day * 7 days
-		date.setTime(expireTime);
+		const expires = new Date();
+		expires.setDate(expires.getDate() + SESSION_TIMEOUT_DAYS);
 
-		const updatedSession = await sessionModel.updateSession(req.cookies.sid, date);
-		res.locals.sid = updatedSession.id;
+		// try to update existing session before creating a new one
+		// TODO rethink how to handle this with fewer queries
+		let session = await sessionModel.findSession(res.locals.user.username);
+		session = await sessionModel.updateSession(session.id, expires);
+		if (!session) session = await sessionModel.createSession(res.locals.user.username, expires);
 
-		return next();
+		res.locals.sid = session.id;
+		res.locals.expires = expires;
 	} catch (error) {
 		return next(error);
 	}
+
+	return next();
 }
 
 /**

@@ -8,7 +8,7 @@ const router = Router();
  * Route used to obtain a user's profile information
  */
 router.get('/:username',
-  verifyUser,
+  // todo verify user
   getUserProfile,
   (req, res) => {
     if (!res.locals.user) return res.status(401).json({
@@ -26,7 +26,7 @@ router.get('/:username',
  * Route used to follow a user.
  */
 router.post('/:username',
-  verifyUser,
+  // todo verify user
   followUser,
   (req, res, next) => {
     if (!res.locals.user) return res.status(401).json({
@@ -47,7 +47,7 @@ router.post('/:username',
  * Route used to follow a user.
  */
 router.delete('/:username',
-  verifyUser,
+  // todo verify user
   unfollowUser,
   (req, res, next) => {
     if (!res.locals.user) return res.status(401).json({
