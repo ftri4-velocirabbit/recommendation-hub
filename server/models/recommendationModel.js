@@ -52,9 +52,23 @@ async function deleteRecommendation(id) {
   return result.rowCount > 0;
 }
 
+/**
+ * @returns Array of recommendations for a given username.
+ */
+async function searchRecommendations(username) {
+  const result = await pool.query(`
+    SELECT id, username, title, body, date, category, rating
+    FROM recommendations
+    WHERE username = $1;
+  `, [username]);
+
+  return result.rows;
+}
+
 module.exports = {
   createRecommendation,
   readRecommendation,
   updateRecommendation,
   deleteRecommendation,
+  searchRecommendations,
 };
