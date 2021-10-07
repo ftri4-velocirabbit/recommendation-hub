@@ -1,3 +1,5 @@
+@import "./../config.scss";
+
 #landing-container {
   max-width: 800px;
   height: 450px;
@@ -6,6 +8,7 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  background-color: $linen;
 }
 
 .prev,
@@ -48,4 +51,8 @@
   top: -10%;
   width: 100%;
   text-align: center;
+}
+
+.carouselItem {
+  border: 1px solid black;
 }
