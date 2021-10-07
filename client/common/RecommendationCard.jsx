@@ -75,11 +75,12 @@ export default function RecommendationCard({
       <Stack className='feed-recommendation-header'>
         <CardHeader
           avatar={
-            <Avatar sx={{ bgcolor: red[500] }}>
+            <Avatar sx={{ bgcolor: '#817f70'}}>
               {getFirstWordLetters(name)}
               {/* TODO pick a random color per user */}
             </Avatar>
           }
+          // sx={{ typography: 'cardHeader' }}
           title={name}
           subheader={new Date(date).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}
         />

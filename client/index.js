@@ -88,6 +88,12 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Cormorant Garamond',
+    cardHeader: {
+    fontStyle: 'italic',
+    },
+    h6: {
+      fontStyle: 'italic',
+      },
   },
 });
 
