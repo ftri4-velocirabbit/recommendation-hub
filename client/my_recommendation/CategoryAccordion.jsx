@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import './CategoryAccordion.scss';
 
@@ -15,6 +15,27 @@ import RecommendationCard from './../common/RecommendationCard.jsx';
 
 export default function CategoryAccordion({ category, recommendations }) {
 	const id = category + '-accordion';
+  // const [recs, setRecs] = useState(recommendations);
+
+  const recCards = [];
+  // function getRecs () {
+  //   for (let rec of recommendations) {
+  //     recCards.push(<RecommendationCard key={rec.id} recommendation={rec} isEditable={true} />);
+  //   }
+  //   console.log('recs',recommendations);
+  // }
+
+  // useEffect(() => {
+  //   fetch('/api/recommendation')
+  //     .then(res => res.json())
+  //     .then(data => console.log('fetched data', data));
+  // }, []);
+  
+
+  function handleAddRec () {
+    console.log('add');
+    
+  }
 
 	return (
 		<Accordion>
@@ -24,7 +45,7 @@ export default function CategoryAccordion({ category, recommendations }) {
 				</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
-				<Button>
+				<Button onClick={handleAddRec}>
 					Add <AddIcon />
 				</Button>
 				{recommendations && (
@@ -32,6 +53,7 @@ export default function CategoryAccordion({ category, recommendations }) {
 						{recommendations.map((rec) => (
 							<RecommendationCard key={rec.id} recommendation={rec} isEditable={true} />
 						))}
+            {/* {recCards} */}
 					</Stack>
 				)}
 			</AccordionDetails>
