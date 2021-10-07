@@ -14,6 +14,7 @@ import LogoutModal from './../modals/LogoutModal.jsx';
 
 export default function App() {
   /* STATE */
+
   const [useLightTheme, setUseLightTheme] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -28,6 +29,22 @@ export default function App() {
 
 
   /* ACTIONS */
+
+  useState(async () => {
+    // attempt to grab user info in case user has valid session cookie
+    const response = await fetch('/api/user', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const body = await response.json();
+
+    if (response.status !== 200) return; // user does not have a valid session
+
+    setUser(body.user);
+  }, []);
+
   const handleLoginRequest = useCallback(async (username, password) => {
     const response = await fetch('/login', {
       method: 'POST',
@@ -99,7 +116,9 @@ export default function App() {
     handleCloseLogoutModal();
   }, [handleCloseLogoutModal]);
 
-  /* Render */
+
+  /* RENDER */
+
   const theme = useTheme();
   theme.palette.mode = useLightTheme ? 'light' : 'dark';
   // STRETCH add light/dark mode button

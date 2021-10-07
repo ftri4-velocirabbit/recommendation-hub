@@ -1,6 +1,7 @@
 const { pool } = require('./setup.js');
 
 const { createCategory } = require('./categoryModel');
+const { createUser } = require('./userModel');
 
 const CATEGORIES = require('./../../shared/categories.json');
 
@@ -127,4 +128,33 @@ async function destroyDatabase() {
   }
 }
 
-module.exports = { initDatabase, destroyDatabase };
+/**
+ * Fill database with some test data.
+ */
+async function prefillDatabase() {
+  const passhash = '$2b$10$nOUIs5kJ7naTuTFkBy1veuK0kSxUFXfuaOKdOKf9xYT0KKIGSJwFa';
+  const lastLoginDate = new Date();
+  const lastLoginIp = '127.0.0.1';
+  const users = [
+    { username: 'adam', name: 'Adam Sheff', email: 'adam@gmail.com' },
+    { username: 'ali', name: 'Ali', email: 'ali@gmail.com' },
+    { username: 'angylynn', name: 'Angelyn Truong', email: 'angyltnn@gmail.com' },
+    { username: 'Anne Chan', name: 'Anne Chan', email: 'ann@gmail.com' },
+    { username: 'clinton', name: 'Clinton Quach', email: 'clinton@gmail.com' },
+    { username: 'conrad', name: 'Conrad Friesen', email: 'conrad@gmail.com' },
+    { username: 'daniel', name: 'Daniel', email: 'daniel@gmail.com' },
+    { username: 'danni', name: 'Danni Denmark', email: 'danni@gmail.com' },
+    { username: 'duke', name: 'Duke Lee', email: 'duke@gmail.com' },
+    // TODO add everyone else
+  ];
+
+  // Create users
+  for (const user of users) {
+    await createUser(user.username, user.name, user.email, lastLoginIp, lastLoginDate, passhash);
+  }
+
+  // Create recommendations
+
+}
+
+module.exports = { initDatabase, destroyDatabase, prefillDatabase };
