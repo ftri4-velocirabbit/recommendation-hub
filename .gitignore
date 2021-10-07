@@ -106,10 +106,8 @@ dist
 # Custom
 build
 secrets
-<<<<<<< HEAD
 
 # DS_STORE
 .DS_STORE
-=======
 package-lock.json
->>>>>>> dev
+modals/setup.js
