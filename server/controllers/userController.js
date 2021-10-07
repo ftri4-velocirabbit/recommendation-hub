@@ -7,6 +7,7 @@ const {
 	getPeopleUserFollows,
 	updateUser: umUpdateUser,
 	searchUsers: umSearchUsers,
+	followUser: umFollowUser,
 } = require('../models/userModel');
 const { isValidName, isValidEmail, isValidPassword, isValidUsername } = require('./../../shared/validation');
 
@@ -67,14 +68,13 @@ async function getUser(req, res, next) {
 	const followedUsers = await getPeopleUserFollows(user.username);
 	const followers = await getPeopleThatFollowUser(user.username);
 
-
 	res.locals.user = {
 		name: user.name,
 		username: user.username,
 		email: user.email,
 	};
-	res.followedUsers = followedUsers;
-	res.followers = followers;
+	res.locals.followedUsers = followedUsers;
+	res.locals.followers = followers;
 
 	return next();
 }
@@ -200,7 +200,9 @@ async function followUser(req, res, next) {
 	if (!res.locals.user) return next();
 	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
 
-	res.locals.dbStatus = await followUser(res.locals.user.username, req.params.username);
+	req.params.username = decodeURIComponent(req.params.username);
+
+	res.locals.dbStatus = await umFollowUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
 		res.locals.followedUsers = await getPeopleUserFollows(res.locals.user.username);

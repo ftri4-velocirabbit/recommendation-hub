@@ -17,6 +17,8 @@ export default function App() {
 
   const [useLightTheme, setUseLightTheme] = useState(false);
   const [user, setUser] = useState(null);
+  const [followedUsers, setFollowedUsers] = useState([]);
+  const [followers, setFollowers] = useState([]);
 
   // controlled COMPONENTS
   const [isOpenLoginModal, handleOpenLoginModal, handleCloseLoginModal] = useModal();
@@ -43,6 +45,8 @@ export default function App() {
     if (response.status !== 200) return; // user does not have a valid session
 
     setUser(body.user);
+    setFollowedUsers(body.followedUsers);
+    setFollowers(body.followers);
   }, []);
 
   const handleLoginRequest = useCallback(async (username, password) => {
@@ -68,6 +72,8 @@ export default function App() {
     }
 
     setUser(body.user);
+    setFollowedUsers(body.followedUsers);
+    setFollowers(body.followers);
     handleCloseLoginModal();
   }, [handleCloseLoginModal]);
 
@@ -94,6 +100,8 @@ export default function App() {
     }
 
     setUser(body.user);
+    setFollowedUsers(body.followedUsers);
+    setFollowers(body.followers);
     handleCloseRegisterModal();
   }, [handleCloseRegisterModal]);
 
@@ -132,7 +140,12 @@ export default function App() {
         handleOpenLogoutModal={handleOpenLogoutModal}
       />
       {!user && <LandingPage />}
-      {user && <Body setUser={setUser} />}
+      {user && <Body
+        followers={followers}
+        followedUsers={followedUsers}
+        setUser={setUser}
+        setFollowedUsers={setFollowedUsers}
+      />}
       <Footer />
 
       <LoginModal

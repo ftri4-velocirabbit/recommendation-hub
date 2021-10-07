@@ -1,19 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import './Friends.scss';
 
 import Following from './Following.jsx';
 import Followers from './Followers.jsx';
+import SearchResult from './SearchResult.jsx';
 
 import TextField from '@mui/material/TextField';
 
 export default function Friends({
+  followers,
+  followedUsers,
   setUser,
+  setFollowedUsers,
 }) {
   /* STATE */
-
-  const [followedUsers, setFollowedUsers] = useState([]);
-  const [followers, setFollowers] = useState([]);
 
   const [searchValue, setSearchValue] = useState('');
   const [userSearchResult, setUserSearchResult] = useState(null);
@@ -53,12 +54,37 @@ export default function Friends({
 
     if (response.status !== 200) {
       // unknown server error
-      console.error(`Server responded to POST /login with status ${response.status}`);
+      console.error(`Server responded to GET /api/search/ with status ${response.status}`);
       return console.error(body);
     }
 
     setUserSearchResult(body.users);
   }, [setUser]);
+
+  const followUser = useCallback(async (name, username) => {
+    setFollowedUsers(followedUsers => [...followedUsers, { name, username }]);
+
+    const response = await fetch('/api/profile/' + encodeURIComponent(username), {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const body = await response.json();
+
+    if (response.status === 401) {
+      // User lost session
+      return setUser(null);
+    }
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /api/profile/ with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setFollowedUsers(body.followedUsers); // syncs with server when response comes in
+  }, [setFollowedUsers, setUser]);
 
 
   /* RENDER */
@@ -70,13 +96,15 @@ export default function Friends({
         value={searchValue}
         onChange={onSearchValueChange}
         onKeyPress={searchOnKeyPress}
-      // todo add keypress controller
       />
       {!userSearchResult && <>
         <Followers followers={followers} />
         <Following followedUsers={followedUsers} />
       </>}
-      {userSearchResult && <h1>TODO: Show results</h1>}
+      {userSearchResult && <SearchResult
+        users={userSearchResult}
+        followUser={followUser}
+      />}
     </div>
   );
 }
