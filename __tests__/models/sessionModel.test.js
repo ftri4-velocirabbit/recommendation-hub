@@ -1,7 +1,7 @@
 const { pool } = require('../../server/models/setup');
 const { initDatabase, destroyDatabase } = require('../../server/models/databaseModel');
 const { createUser } = require('../../server/models/userModel');
-const { createSession, readSession, updateSession, deleteSession } = require('../../server/models/sessionModel');
+const { createSession, readSession, findSession, updateSession, deleteSession } = require('../../server/models/sessionModel');
 
 /*
   Comments for how to set up local postgres database
@@ -62,6 +62,22 @@ describe('Test session model interface', () => {
 
     // read a session
     session = await readSession(session.id);
+    expect(session).toMatchObject({ username, expires });
+
+    // database only has one session object
+    const result = await pool.query(`SELECT * FROM sessions;`, []);
+    expect(result.rows).toHaveLength(1);
+  });
+
+  test('Find a session by username', async () => {
+    const expires = new Date();
+
+    // create a session
+    let session = await createSession(username, expires);
+    expect(session).toMatchObject({ username, expires });
+
+    // find a session
+    session = await findSession(username);
     expect(session).toMatchObject({ username, expires });
 
     // database only has one session object

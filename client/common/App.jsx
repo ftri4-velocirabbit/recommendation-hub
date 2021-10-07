@@ -15,7 +15,7 @@ import LogoutModal from './../modals/LogoutModal.jsx';
 export default function App() {
   /* STATE */
   const [useLightTheme, setUseLightTheme] = useState(false);
-  const [user, setUser] = useState({}); //null, useState({});
+  const [user, setUser] = useState(null);
 
   // controlled COMPONENTS
   const [isOpenLoginModal, handleOpenLoginModal, handleCloseLoginModal] = useModal();
@@ -28,17 +28,76 @@ export default function App() {
 
 
   /* ACTIONS */
-  const handleLoginRequest = useCallback((username, password) => {
-    // TODO implement AJAX login handshake
-  }, []);
+  const handleLoginRequest = useCallback(async (username, password) => {
+    const response = await fetch('/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    const body = await response.json();
 
-  const handleRegisterRequest = useCallback((name, username, email, password) => {
-    // TODO implement AJAX login handshake
-  }, []);
+    if (response.status === 401) {
+      // invalid request, notify user
+      return setLoginModalError(body.error);
+    }
 
-  const handleLogoutRequest = useCallback(() => {
-    // TODO implement AJAX login handshake
-  }, []);
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /login with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setUser(body.user);
+    handleCloseLoginModal();
+  }, [handleCloseLoginModal]);
+
+  const handleRegisterRequest = useCallback(async (name, username, email, password) => {
+    const response = await fetch('/api/user', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, username, password, email }),
+    });
+    const body = await response.json();
+
+    if (response.status === 401) {
+      // invalid request, notify user
+      return setRegisterModalError(body.error);
+    }
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /api/user with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setUser(body.user);
+    handleCloseRegisterModal();
+  }, [handleCloseRegisterModal]);
+
+  const handleLogoutRequest = useCallback(async () => {
+    const response = await fetch('/logout', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const body = await response.json();
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to POST /api/user with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setUser(null);
+    handleCloseLogoutModal();
+  }, [handleCloseLogoutModal]);
 
   /* Render */
   const theme = useTheme();

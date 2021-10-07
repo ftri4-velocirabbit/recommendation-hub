@@ -11,7 +11,7 @@ const {
 const router = Router();
 
 router.get('/',
-  verifyUser,
+  // todo verifyUser,
   getUserRecommendations,
   (req, res, next) => {
     if (!res.locals.user) return res.status(401).json({
@@ -24,7 +24,7 @@ router.get('/',
 );
 
 router.post('/',
-  verifyUser,
+  // todo verifyUser,
   saveRecommendation,
   getUserRecommendations,
   (req, res, next) => {
@@ -41,7 +41,7 @@ router.post('/',
 );
 
 router.patch('/:id',
-  verifyUser,
+  // todo verifyUser,
   updateRecommendation,
   getUserRecommendations,
   (req, res, next) => {
@@ -58,7 +58,7 @@ router.patch('/:id',
 );
 
 router.delete('/:id',
-  verifyUser,
+  // todo verifyUser,
   deleteRecommendation,
   getUserRecommendations,
   (req, res, next) => {

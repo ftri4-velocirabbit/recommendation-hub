@@ -42,6 +42,13 @@ app.use((err, req, res, next) => {
 
 
 /* INIT SERVER */
-app.listen(PORT, HOST, () => console.log(`Server listening on http://${HOST}:${PORT}`));
+
+// TODO remove database wipe
+const databaseModel = require('./models/databaseModel');
+databaseModel.destroyDatabase()
+	.then(() => databaseModel.initDatabase())
+	.then(() => app.listen(PORT, HOST, () => console.log(`Server listening on http://${HOST}:${PORT}`)));
+
+// app.listen(PORT, HOST, () => console.log(`Server listening on http://${HOST}:${PORT}`))
 
 module.exports = app;

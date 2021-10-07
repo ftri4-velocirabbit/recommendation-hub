@@ -5,7 +5,7 @@ const { searchUsers, verifyUser } = require('./../controllers/userController');
 const router = Router();
 
 router.get('/:term',
-  verifyUser,
+  // todo verify user
   searchUsers,
   (req, res, next) => {
     if (!res.locals.user) return res.status(401).json({

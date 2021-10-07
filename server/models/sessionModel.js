@@ -27,6 +27,19 @@ async function readSession(sid) {
 }
 
 /**
+ * @returns Database session object or undefined if no session exists.
+ */
+async function findSession(username) {
+  const result = await pool.query(`
+    SELECT id, username, expires
+    FROM sessions
+    WHERE username = $1;
+  `, [username]);
+
+  return result.rows[0];
+}
+
+/**
  * @returns Database session object or undefined if no session exists with that sid.
  */
 async function updateSession(sid, expires) {
@@ -60,5 +73,6 @@ module.exports = {
   createSession,
   updateSession,
   readSession,
+  findSession,
   deleteSession
 };
