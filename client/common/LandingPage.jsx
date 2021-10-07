@@ -7,7 +7,4 @@ export default function LandingPage() {
   );
 }
 
-// need to style:
-// .MuiCard-root
-// .MuiPaper-root
 
