@@ -163,12 +163,7 @@ async function followUser(req, res, next) {
 	res.locals.dbStatus = await userModel.followUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
-		// gather followedUsers
-		res.locals.followedUsers = (await userModel.getFollowed(res.locals.user.username))
-			.map(followRelationship => ({
-				name: followRelationship.followed_name,
-				username: followRelationship.followed_username,
-			}));
+		res.locals.followedUsers = await userModel.getPeopleUserFollows(res.locals.user.username);
 	}
 
 	return next();
@@ -186,12 +181,7 @@ async function unfollowUser(req, res, next) {
 	res.locals.dbStatus = await userModel.unfollowUser(res.locals.user.username, req.params.username);
 
 	if (res.locals.dbStatus) {
-		// gather followedUsers
-		res.locals.followedUsers = (await userModel.getFollowed(res.locals.user.username))
-			.map(followRelationship => ({
-				name: followRelationship.followed_name,
-				username: followRelationship.followed_username,
-			}));
+		res.locals.followedUsers = await userModel.getPeopleThatFollowUser(res.locals.user.username);
 	}
 
 	return next();
