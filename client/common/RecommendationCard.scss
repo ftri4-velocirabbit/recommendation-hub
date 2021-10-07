@@ -1,8 +1,17 @@
+@import "./../config.scss";
+
 .feed-recommendation-header {
   display: flex !important;
   flex-direction: row !important;
   justify-content: space-between;
   align-items: center;
+  background-color: $darklinen;
+  border: 1px solid black;
+}
+
+.feed-recommendation {
+  background-color: $darklinen;
+  border: 1px solid black;
 }
 
 #feed {

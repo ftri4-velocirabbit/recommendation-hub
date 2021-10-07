@@ -12,16 +12,28 @@ function getFirstWordLetters(string) {
   export default function UserAvatar(props) {
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const handlePopoverOpen = (event) => {
+    const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
 
-    const handlePopoverClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    };
-
-    const handlePopoverClose = () => {
+    const handleClose = () => {
       setAnchorEl(null);
+    };
+
+    const [userInfo, setUserInfo] = useState([]);
+    
+    const handleUnfollow = (event) => {
+      
+      fetch(`/api/profile/${event.target.value}`, {
+        method: 'DELETE',
+        headers: {'Content-type': 'application/json',
+      },
+      })
+      .then (res => res.json())
+      .then(data => {
+        const followers = data.followedUser;
+        setUserInfo(followers);
+      });
     };
 
     const open = Boolean(anchorEl);
@@ -33,9 +45,9 @@ function getFirstWordLetters(string) {
         <Avatar sx={{ bgcolor: red[500] }} 
         aria-owns={open ? 'mouse-over-popover' : undefined}
         aria-haspopup="true"
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-        onClick={handlePopoverClick}
+        // onMouseEnter={handlePopoverOpen}
+        // onMouseLeave={handlePopoverClose}
+        onClick={handleClick}
         >
        
         {getFirstWordLetters(props.name)} 
@@ -43,25 +55,17 @@ function getFirstWordLetters(string) {
         </Avatar>
         <Popover
         id="mouse-over-popover"
-        sx={{
-          pointerEvents: 'none',
-        }}
         open={open}
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        onClose={handlePopoverClose}
-        disableRestoreFocus
+        onClose={handleClose}
         >
 
         {/* show user's name using {name} */}
-      <Typography sx={{ p: 1 }}>This is user's full name. <br /><button className="newLine">Unfollow</button></Typography>  
+      <Typography sx={{ p: 1 }} id={props.id}>{props.name} <br /><button className="newLine" onClick={handleUnfollow} value={props.id}>Unfollow</button></Typography>  
       </Popover>
       </div>
     );

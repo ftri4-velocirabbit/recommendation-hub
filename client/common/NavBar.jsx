@@ -14,7 +14,7 @@ export default function NavBar({
 }) {
   return (
     <Box>
-      <AppBar position="static">
+      <AppBar position="static" className="navBar">
         <Toolbar>
           <Typography variant="h5" component="h1" sx={{ flexGrow: 1 }}>
             Recommendation&trade;
