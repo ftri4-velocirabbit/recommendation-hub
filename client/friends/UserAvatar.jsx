@@ -16,7 +16,7 @@ function getFirstWordLetters(string) {
       setAnchorEl(event.currentTarget);
     };
 
-    const handlePopoverClick = (event) => {
+    const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
 
@@ -24,6 +24,9 @@ function getFirstWordLetters(string) {
       setAnchorEl(null);
     };
 
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
     const open = Boolean(anchorEl);
 
 
@@ -33,9 +36,9 @@ function getFirstWordLetters(string) {
         <Avatar sx={{ bgcolor: red[500] }} 
         aria-owns={open ? 'mouse-over-popover' : undefined}
         aria-haspopup="true"
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-        onClick={handlePopoverClick}
+        // onMouseEnter={handlePopoverOpen}
+        // onMouseLeave={handlePopoverClose}
+        onClick={handleClick}
         >
        
         {getFirstWordLetters(props.name)} 
@@ -56,7 +59,7 @@ function getFirstWordLetters(string) {
           vertical: 'top',
           horizontal: 'left',
         }}
-        onClose={handlePopoverClose}
+        onClose={}
         disableRestoreFocus
         >
 

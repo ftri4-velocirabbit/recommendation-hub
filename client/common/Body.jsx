@@ -19,8 +19,8 @@ export default function Body() {
 
     <Stack id='body' direction='row'>
       <VerticalNavBar />
-      {/* <Settings /> */}
-      <MyRecommendation />
+      <Friends />
+      {/* <MyRecommendation /> */}
     </Stack>
   );
 }
