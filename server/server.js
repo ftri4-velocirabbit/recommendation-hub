@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 // path, Controllers, Routers
 const apiRouter = require('./routes/api');
 const loginRouter = require('./routes/login');
+const logoutRouter = require('./routes/logout');
 
 //connect to the SQL DB
 
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
  */
 app.use('/api', apiRouter);
 app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) => res.status(404).send("This is not the page you're looking for..."));

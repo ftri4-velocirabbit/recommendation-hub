@@ -5,7 +5,7 @@ const sessionModel = require('../models/sessionModel');
  */
 async function createSession(req, res, next) {
 	if (!res.locals.user) return next();
-
+	if (res.locals.isLoggedIn) return next();
 	try {
 		const { username } = res.locals.user;
 
@@ -30,6 +30,7 @@ async function createSession(req, res, next) {
  * @returns session id or error
  */
 async function updateSession(req, res, next) {
+	if (!res.locals.isLoggedIn) return next();
 	try {
 		// getting time 7 days from now for session expiration
 		let date = new Date();
@@ -50,6 +51,7 @@ async function updateSession(req, res, next) {
  * @returns Boolean whether the session was successfully deleted.
  */
 async function deleteSession(req, res, next) {
+	if (res.locals.isLoggedIn) return next();
 	try {
 		const result = await sessionModel.deleteSession(req.cookies.sid);
 		res.clearCookie('sid');
