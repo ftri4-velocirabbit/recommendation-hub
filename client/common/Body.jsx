@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import './Body.scss';
 
@@ -17,10 +17,16 @@ export default function Body({
   setFollowedUsers,
 }) {
   const [page, setPage] = useState('feed');
+  const [searchValue, setSearchValue] = useState('');
+
+  const onPageNav = useCallback(page => {
+    setSearchValue('');
+    setPage(page);
+  }, []);
 
   return (
     <Stack id='body' direction='row'>
-      <VerticalNavBar setPage={setPage} />
+      <VerticalNavBar setPage={onPageNav} />
       {page === 'feed' && <Feed />}
       {page === 'recommendations' && <MyRecommendation />}
       {page === 'friends' && <Friends
@@ -28,6 +34,8 @@ export default function Body({
         followedUsers={followedUsers}
         setUser={setUser}
         setFollowedUsers={setFollowedUsers}
+        searchValue={searchValue}
+        setSearchValue={setSearchValue}
       />}
       {page === 'settings' && <Settings />}
     </Stack>
