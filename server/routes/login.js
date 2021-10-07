@@ -1,19 +1,21 @@
 const { Router } = require('express');
 
-const userController = require('../controllers/userController');
-const sessionController = require('../controllers/sessionController');
-const cookieController = require('../controllers/cookieController');
+const { verifyUserLogin } = require('../controllers/userController');
+const { updateSession } = require('../controllers/sessionController');
+const { setCookie } = require('../controllers/cookieController');
 
 const router = Router();
 
 router.post('/',
-	userController.verifyUser,
-	sessionController.updateSession,
-	sessionController.deleteSession,
-	sessionController.createSession,
-	cookieController.createCookie,
-	(req, res) => {
-		res.status(200).json(res.locals.user);
+	verifyUserLogin,
+	updateSession,
+	setCookie,
+	(req, res, next) => {
+		if (res.locals.error) return res.status(401).json({ error: res.locals.error });
+		if (!res.locals.user) return next(new Error('Failed to create user in database.'));
+		if (!res.locals.session) return next(new Error('User created, but session was not set.'));
+
+		return res.json({ user: res.locals.user });
 	}
 );
 

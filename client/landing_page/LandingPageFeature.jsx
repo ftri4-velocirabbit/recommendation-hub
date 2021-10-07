@@ -36,11 +36,11 @@ const slides = [
 ];
 
 export default function LandingPageFeature() {
-  let [carouselPageNum, setCarouselPageNum] = useState(1);
+  const [carouselPageNum, setCarouselPageNum] = useState(1);
 
   /* changes slides at set time interval */
   useEffect(() => {
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       // switch logic
       // iterate through slides array
       // set each element of array as new state
@@ -51,6 +51,8 @@ export default function LandingPageFeature() {
         return num;
       });
     }, 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleChange = (event, pageNum) => {
