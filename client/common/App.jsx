@@ -132,7 +132,7 @@ export default function App() {
         handleOpenLogoutModal={handleOpenLogoutModal}
       />
       {!user && <LandingPage />}
-      {user && <Body />}
+      {user && <Body setUser={setUser} />}
       <Footer />
 
       <LoginModal

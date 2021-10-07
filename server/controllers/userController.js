@@ -6,6 +6,7 @@ const {
 	getPeopleThatFollowUser,
 	getPeopleUserFollows,
 	updateUser: umUpdateUser,
+	searchUsers: umSearchUsers,
 } = require('../models/userModel');
 const { isValidName, isValidEmail, isValidPassword, isValidUsername } = require('./../../shared/validation');
 
@@ -157,13 +158,12 @@ async function deleteUser(req, res, next) {
  * Middleware: Search for users based on parameter `term`. Array of front-end User, may be empty, will be set in `res.locals.users`.
  */
 async function searchUsers(req, res, next) {
-	// confirm user has passes access check
-	if (!res.locals.user) return next();
+	if (!res.locals.session) return next();
 	if (!req.params.term) return next(new Error('Middleware reached without term parameter.'));
 
 	req.params.term = decodeURIComponent(req.params.term);
 
-	res.locals.users = (await searchUsers(req.params.term))
+	res.locals.users = (await umSearchUsers(req.params.term))
 		.map(user => ({
 			name: user.name,
 			username: user.username,

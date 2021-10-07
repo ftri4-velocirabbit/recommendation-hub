@@ -57,8 +57,7 @@ export default function Friends({
       return console.error(body);
     }
 
-    setFollowedUsers
-    setFollowers
+    setUserSearchResult(body.users);
   }, [setUser]);
 
 

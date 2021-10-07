@@ -10,7 +10,9 @@ import Friends from './../friends/Friends.jsx';
 
 import Stack from '@mui/material/Stack';
 
-export default function Body() {
+export default function Body({
+  setUser,
+}) {
   const [page, setPage] = useState('feed');
 
   return (
@@ -18,7 +20,7 @@ export default function Body() {
       <VerticalNavBar setPage={setPage} />
       {page === 'feed' && <Feed />}
       {page === 'recommendations' && <MyRecommendation />}
-      {page === 'friends' && <Friends />}
+      {page === 'friends' && <Friends setUser={setUser} />}
       {page === 'settings' && <Settings />}
     </Stack>
   );
