@@ -2,7 +2,8 @@ const { searchRecommendations } = require('./../models/recommendationModel');
 const { getFollowed } = require('./../models/userModel');
 
 /**
- * Middleware: If successful, sets `res.locals.feed` to an array of front-end schema Recommendation objects.
+ * Middleware: If successful, sets `res.locals.feed` to an array of Recommendation objects with 
+ * { id, username, name, title, body, date, category, rating } schema.
  */
 async function getFeed(req, res, next) {
   if (!res.locals.user) return next();

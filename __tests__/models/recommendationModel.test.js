@@ -20,6 +20,7 @@ const {
 
 describe('Test recommendation model interface', () => {
   let username = 'miguel';
+  let name = 'Miguel Hernandez';
 
   beforeAll(async () => {
     await databaseModel.destroyDatabase();
@@ -28,7 +29,7 @@ describe('Test recommendation model interface', () => {
     // create users
     await userModel.createUser(
       username,
-      'Miguel Hernandez',
+      name,
       'miguel@gmail.com',
       '127.0.0.1',
       new Date(),
@@ -95,21 +96,21 @@ describe('Test recommendation model interface', () => {
     const category2 = 'Music';
     const rating2 = 0;
 
-    await createRecommendation(username, title, body, date, category, rating);
+    let rec1 = await createRecommendation(username, title, body, date, category, rating);
 
     // search for recommendation
     let recommendations = await searchRecommendations(username);
     expect(recommendations).toHaveLength(1);
-    expect(recommendations[0]).toMatchObject({ title, body, date, category, rating });
+    expect(recommendations[0]).toMatchObject({ ...rec1, name });
 
-    await createRecommendation(username, title2, body2, date2, category2, rating2);
+    let rec2 = await createRecommendation(username, title2, body2, date2, category2, rating2);
 
     // search for both recommendation
     recommendations = await searchRecommendations(username);
     expect(recommendations).toHaveLength(2);
     expect(recommendations).toMatchObject([
-      { title, body, date, category, rating },
-      { title: title2, body: body2, date: date2, category: category2, rating: rating2 },
+      { ...rec1, name },
+      { ...rec2, name }
     ]);
 
     // database only has one recommendation object
