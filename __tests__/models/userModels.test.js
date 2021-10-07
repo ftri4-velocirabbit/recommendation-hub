@@ -11,7 +11,29 @@ const databaseModel = require('./../../server/models/databaseModel');
   To add tester with roles, inside psql: CREATE USER test PASSWORD 'test';
 */
 
+
+
+
+
+
+
+
+
+
+
 // TODO add test for getting list of followers and list of people you follow
+
+
+
+
+
+
+
+
+
+
+
+
 
 describe('Test user model interface', () => {
   beforeAll(async () => {

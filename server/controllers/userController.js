@@ -120,14 +120,84 @@ async function deleteUser(req, res, next) {
 }
 
 /**
- * Middleware: Search for users based on parameter `term`. Array of users, may be empty, will be set in `res.locals.users`.
+ * Middleware: Search for users based on parameter `term`. Array of front-end User, may be empty, will be set in `res.locals.users`.
  */
 async function searchUsers(req, res, next) {
 	// confirm user has passes access check
 	if (!res.locals.user) return next();
-	if (!req.params.term) return next(new Error('Middleware reached without term query parameter.'));
+	if (!req.params.term) return next(new Error('Middleware reached without term parameter.'));
 
-	res.locals.users = userModel.searchUsers(req.params.term);
+	res.locals.users = (await userModel.searchUsers(req.params.term))
+		.map(user => ({
+			name: user.name,
+			username: user.username,
+			email: user.email,
+		}));
+	return next();
+}
+
+/**
+ * Middleware: Search for a user profile information on parameter `username`. If found, sets `res.local.foundUser` 
+ * to a User front-end schema object.
+ */
+async function getUserProfile(req, res, next) {
+	// confirm user has passes access check
+	if (!res.locals.user) return next();
+	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
+
+	const result = await userModel.readUser(res.params.username);
+
+	res.locals.user = {
+		name: result.name,
+		username: result.username,
+		email: result.email,
+	};
+	return next();
+}
+
+/**
+ * Middleware: Sync with database a user follow event. Boolean set at `res.locals.dbStatus` will indicate
+ * wether follow was successful. If true, `res.locals.followedUsers` will be an array of front-end schema UserListItem.
+ */
+async function followUser(req, res, next) {
+	// confirm user has passes access check
+	if (!res.locals.user) return next();
+	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
+
+	res.locals.dbStatus = await userModel.followUser(res.locals.user.username, req.params.username);
+
+	if (res.locals.dbStatus) {
+		// gather followedUsers
+		res.locals.followedUsers = (await userModel.getFollowed(res.locals.user.username))
+			.map(followRelationship => ({
+				name: followRelationship.followed_name,
+				username: followRelationship.followed_username,
+			}));
+	}
+
+	return next();
+}
+
+/**
+ * Middleware: Sync with database a user un-follow event. Boolean set at `res.locals.dbStatus` will indicate
+ * wether follow was successful. If true, `res.locals.followedUsers` will be an array of front-end schema UserListItem.
+ */
+async function unfollowUser(req, res, next) {
+	// confirm user has passes access check
+	if (!res.locals.user) return next();
+	if (!req.params.username) return next(new Error('Middleware reached without username parameter.'));
+
+	res.locals.dbStatus = await userModel.unfollowUser(res.locals.user.username, req.params.username);
+
+	if (res.locals.dbStatus) {
+		// gather followedUsers
+		res.locals.followedUsers = (await userModel.getFollowed(res.locals.user.username))
+			.map(followRelationship => ({
+				name: followRelationship.followed_name,
+				username: followRelationship.followed_username,
+			}));
+	}
+
 	return next();
 }
 
@@ -137,5 +207,8 @@ module.exports = {
 	verifyUser,
 	updateUser,
 	deleteUser,
-	searchUsers
+	searchUsers,
+	getUserProfile,
+	followUser,
+	unfollowUser
 };
