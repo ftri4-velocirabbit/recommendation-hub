@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 
 import './Body.scss';
 
@@ -11,16 +11,15 @@ import Friends from './../friends/Friends.jsx';
 import Stack from '@mui/material/Stack';
 
 export default function Body() {
-  return (
-    // <Stack id='body' direction='row'>
-    //   <VerticalNavBar />
-    //   <Feed />
-    // </Stack>
+  const [page, setPage] = useState('feed');
 
+  return (
     <Stack id='body' direction='row'>
-      <VerticalNavBar />
-      {/* <Settings /> */}
-      <MyRecommendation />
+      <VerticalNavBar setPage={setPage} />
+      {page === 'feed' && <Feed />}
+      {page === 'recommendations' && <MyRecommendation />}
+      {page === 'friends' && <Friends />}
+      {page === 'settings' && <Settings />}
     </Stack>
   );
 }
