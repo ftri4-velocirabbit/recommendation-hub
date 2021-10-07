@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import './Friends.scss';
 
@@ -62,7 +62,12 @@ export default function Friends({
   }, [setUser]);
 
   const followUser = useCallback(async (name, username) => {
-    setFollowedUsers(followedUsers => [...followedUsers, { name, username }]);
+    setFollowedUsers(followedUsers => {
+      if (!followedUsers.find(user => user.username === username))
+        return [...followedUsers, { name, username }];
+      else
+        return followedUsers;
+    });
 
     const response = await fetch('/api/profile/' + encodeURIComponent(username), {
       method: 'POST',
@@ -79,7 +84,32 @@ export default function Friends({
 
     if (response.status !== 200) {
       // unknown server error
-      console.error(`Server responded to POST /api/profile/ with status ${response.status}`);
+      console.error(`Server responded to POST /api/profile/:username with status ${response.status}`);
+      return console.error(body);
+    }
+
+    setFollowedUsers(body.followedUsers); // syncs with server when response comes in
+  }, [setFollowedUsers, setUser]);
+
+  const unfollowUser = useCallback(async (username) => {
+    setFollowedUsers(followedUsers => followedUsers.filter(user => user.username !== username));
+
+    const response = await fetch('/api/profile/' + encodeURIComponent(username), {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    const body = await response.json();
+
+    if (response.status === 401) {
+      // User lost session
+      return setUser(null);
+    }
+
+    if (response.status !== 200) {
+      // unknown server error
+      console.error(`Server responded to DELETE /api/profile/:username with status ${response.status}`);
       return console.error(body);
     }
 
@@ -92,14 +122,20 @@ export default function Friends({
   return (
     <div id="friends-container">
       <TextField
-        label="Search People"
+        label="Search people..."
         value={searchValue}
         onChange={onSearchValueChange}
         onKeyPress={searchOnKeyPress}
+        size="small"
       />
       {!userSearchResult && <>
-        <Followers followers={followers} />
-        <Following followedUsers={followedUsers} />
+        <Followers
+          followers={followers}
+        />
+        <Following
+          followedUsers={followedUsers}
+          unfollowUser={unfollowUser}
+        />
       </>}
       {userSearchResult && <SearchResult
         users={userSearchResult}

@@ -44,16 +44,7 @@ async function initDatabase(fillCategories = true) {
     );
   `, []));
 
-  asyncQueries.push(pool.query(/*`
-    CREATE TABLE user_follows(
-      id VARCHAR NOT NULL PRIMARY KEY,
-      username VARCHAR NOT NULL,
-      followed_username VARCHAR NOT NULL,
-      FOREIGN KEY (username) REFERENCES users(username),
-      FOREIGN KEY (followed_username) REFERENCES users(username)
-    );
-  `*/
-    `
+  asyncQueries.push(pool.query(`
     CREATE TABLE user_follows(
       id VARCHAR NOT NULL PRIMARY KEY,
       username VARCHAR NOT NULL,
@@ -149,8 +140,7 @@ async function prefillDatabase() {
   ];
 
   // Create users
-  const userCreatePromises = users.map(user => createUser(user.username, user.name, user.email, lastLoginIp, lastLoginDate, passhash));
-  await Promise.all(userCreatePromises);
+  await Promise.all(users.map(user => createUser(user.username, user.name, user.email, lastLoginIp, lastLoginDate, passhash)));
 
   // Create recommendations
 
