@@ -58,13 +58,15 @@ export default function LandingPageFeature() {
   };
 
   /* change slides */
+  // TODO reset interval timer if use clicks on a button
+  // TODO fix to allow overlapping left and right movement
   const switchSlide = useCallback((n) => {
     //console.log('clicked', n);
     // setCarouselPageNum(num => num + n);
     setCarouselPageNum(num => {
       num += n;
       if (num > slides.length) num -= 1;
-      if (num < 0) num = 0;
+      if (num < 1) num = 1;
       return num;
     });
   }, []);
@@ -78,7 +80,7 @@ export default function LandingPageFeature() {
           imageUrl={slides[carouselPageNum - 1].image}
         />
         <a className="next" onClick={() => switchSlide(1)}>&#10095;</a>
-        <Pagination count={slides.length} variant="outlined" page={carouselPageNum} onChange={handleChange} />
+        <Pagination count={slides.length} variant="outlined" page={carouselPageNum} hidePrevButton hideNextButton onChange={handleChange} />
       </Paper>
     </>
   );
