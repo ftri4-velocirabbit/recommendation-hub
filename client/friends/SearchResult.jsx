@@ -6,20 +6,31 @@ import Button from '@mui/material/Button';
 
 export default function SearchResult({
   users,
+  followedUsers,
   followUser,
+  unfollowUser,
 }) {
   return (
     <Stack spacing={2} mt={3}>
-      {users.map(user => (
-        <Stack key={user.username} direction='row'>
-          <Typography mr={2}>{user.name}</Typography>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => followUser(user.name, user.username)}
-          >Follow</Button>
-        </Stack>
-      ))}
+      {users.map(user => {
+        const isFollowingUser = !!followedUsers.find(userItem => userItem.username === user.username);
+
+        return (
+          <Stack key={user.username} direction='row'>
+            <Typography mr={2}>{user.name}</Typography>
+            {!isFollowingUser && <Button
+              variant="contained"
+              size="small"
+              onClick={() => followUser(user.name, user.username)}
+            >Follow</Button>}
+            {isFollowingUser && <Button
+              variant="contained"
+              size="small"
+              onClick={() => unfollowUser(user.username)}
+            >Unfollow</Button>}
+          </Stack>
+        );
+      })}
     </Stack>
   );
 }

@@ -130,7 +130,7 @@ export default function Friends({
         onKeyPress={searchOnKeyPress}
         size="small"
         color="warning"
-        sx={{color:'warning.main'}}
+        sx={{ color: 'warning.main' }}
       />
       {!showSearchResult && <>
         <Followers
@@ -143,7 +143,9 @@ export default function Friends({
       </>}
       {showSearchResult && <SearchResult
         users={userSearchResult}
+        followedUsers={followedUsers}
         followUser={followUser}
+        unfollowUser={unfollowUser}
       />}
     </div>
   );
