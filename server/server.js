@@ -10,6 +10,25 @@ const HOST = process.env.HOST || 'localhost';
 
 const app = express();
 
+// First piece of middleware to be hit
+const { logResponse } = require('./../compute/model/timeSeriesModel');
+app.use((req, res, next) => {
+	// start the timer
+	const timeStart = Date.now();
+
+	// mock the send method in the http request objects
+	const originalSend = res.send.bind(res);
+	res.send = function sendSpy(body) {
+		const responseTime = Date.now() - timeStart;
+
+		logResponse(req.method, req.originalUrl, timeStart, responseTime);
+		console.log(`${req.method} ${req.originalUrl} responded in ${responseTime} ms.`);
+
+		return originalSend(body);
+	};
+
+	return next();
+});
 
 /* MIDDLEWARE */
 app.use(express.json());
@@ -45,6 +64,7 @@ app.use((err, req, res, next) => {
 
 // TODO remove database wipe
 const databaseModel = require('./models/databaseModel');
+
 databaseModel.destroyDatabase()
 	.then(() => databaseModel.initDatabase())
 	.then(() => databaseModel.prefillDatabase())

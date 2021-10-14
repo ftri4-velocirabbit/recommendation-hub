@@ -4,7 +4,7 @@
 async function setCookie(req, res, next) {
 	if (!res.locals.session || res.locals.isLoggedIn) return next();
 
-	res.cookie('sid', res.locals.session.id, { httpOnly: true, sameSite: 'lax', expires: res.locals.session.expires });
+	res.cookie('sid', res.locals.session.id, { /*httpOnly: true, sameSite: 'lax',*/ expires: res.locals.session.expires });
 	return next();
 }
 
